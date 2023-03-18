@@ -1,0 +1,45 @@
+:root {
+    --jaz-background: LightSeaGreen;
+    --jaz-font: Black;
+    --jaz-trim: SlateGrey;
+    }
+.splash {
+    cursor: pointer;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    height: 95%;
+    width: 95%;
+    transform: translate(-50%, -50%);
+    background-color: --jaz-background;
+    transition: all ease-in-out;
+    }
+
+.hidden {
+    transition: 0.5s;
+    display: none;
+    }
+
+.splash-header {
+    height: 90%;
+    color: --jaz-font;
+    font-family: consolas;
+    font-size: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+
+.version {
+    height: 75%;
+    color: --jaz-font;
+    font-family: consolas;ß
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+
+.login-box {
+
+}

@@ -1,0 +1,204 @@
+/* .card {
+  position: relative;
+  left: 2em;
+  width: 12.5em;
+  height: 6.5em;
+  background: white;
+  transition: .4s ease-in-out;
+  border-radius: 15px;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+}
+
+.heading {
+  position: relative;
+  color: black;
+  font-weight: bold;
+  font-size: 1.1em;
+  padding-top: 1em;
+  padding-left: 1em;
+  transition: .4s ease-in-out;
+}
+
+.details {
+  position: relative;
+  color: black;
+  font-size: 0.6em;
+  padding-top: 1.5em;
+  padding-left: 2em;
+  transition: .4s ease-in-out;
+}
+
+.price {
+  position: relative;
+  color: black;
+  font-weight: bold;
+  font-size: 0.8em;
+  padding-top: 1.5em;
+  padding-left: 1.5em;
+  top: 9.6em;
+  left: 5em;
+  transition: .4s ease-in-out;
+}
+
+.btn1 {
+  position: relative;
+  border: none;
+  outline: none;
+  background-color: black;
+  color: white;
+  font-size: 0.6em;
+  padding-left: 6.9em;
+  padding-right: 6.9em;
+  padding-top: 0.8em;
+  padding-bottom: 0.85em;
+  border-radius: 10px;
+  left: 2.6em;
+  top: 14.8em;
+  transition: .4s ease-in-out;
+  font-weight: bold;
+}
+
+.btn1:hover {
+  background-color: rgb(43, 168, 43);
+}
+
+.btn2 {
+  position: relative;
+  border: none;
+  outline: none;
+  background-color: black;
+  color: white;
+  font-size: 0.6em;
+  padding-left: 5.1em;
+  padding-right: 5.1em;
+  padding-top: 0.8em;
+  padding-bottom: 0.85em;
+  border-radius: 10px;
+  left: 2.6em;
+  top: 15.5em;
+  transition: .4s ease-in-out;
+  font-weight: bold;
+}
+
+.btn2:hover {
+  background-color: rgb(43, 168, 43);
+}
+
+.glasses {
+  position: relative;
+  top: 0em;
+  left: -0.8em;
+  width: 70px;
+  height: 70px;
+  transition: .4s ease-in-out;
+}
+
+.card:hover {
+  width: 12.5em;
+  height: 21.7em;
+  left: 3.3em;
+}
+
+.card:hover + .glasses {
+  transform: rotateX(360deg);
+  height: 100px;
+  width: 100px;
+  left: -6.2em;
+  top: -6.5em;
+}
+
+.card:hover .heading {
+  transform: translateY(7em) translateX(2.3em);
+}
+
+.card:hover .details {
+  transform: translateY(13em) translateX(3.5em);
+} */
+/* above code is for animated version  use below for now*/
+
+.login-card {
+  background-color: DarkSeaGreen;
+  border-radius: 10px;
+  box-sizing: border-box;
+  padding: 20px;
+  max-width: 400px;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.card-header h1 {
+  font-size: 2em;
+  color: #333;
+  text-shadow: 1px 1px #ddd;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 1.2em;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  box-sizing: border-box;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #f0f0f0;
+  font-size: 1.2em;
+  color: #555;
+  box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+  box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.3);
+  outline: none;
+}
+
+input[type="submit"] {
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding: 10px;
+  transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+  background-color: #0069d9;
+}
+
+.login-button {
+  background-color: DarkOrange;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding: 10px;
+  width: 100%;
+  transition: background-color 0.3s ease;
+  transition: 0.25s;
+}
+
+.login-button:hover {
+  background-color: LightSlateGrey;
+  -webkit-box-shadow: 0px 0px 30px 0px rgba(0,105,217,1);
+  -moz-box-shadow: 0px 0px 30px 0px rgba(0,105,217,1);
+  box-shadow: 0px 0px 30px 0px rgba(0,105,217,1);
+}

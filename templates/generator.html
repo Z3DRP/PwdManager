@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flip-card">
+    <div class="flip-card-inner">
+        <div class="flip-card-front">
+            <p class="title">Generate Password</p>
+            <!--input for number of characters-->
+            <input label="Length" type="number"/>
+            <!--combo box for number of letters and number of numbers-->
+            <button>Generate Password</button>
+        </div>
+        <div class="flip-card-back">
+            <p class="title">BACK</p>
+            <p>Leave Me</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

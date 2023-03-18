@@ -1,0 +1,6 @@
+:root {
+    --jaz-background: DarkSlateGrey;
+}
+body {
+    background-color: var(--jaz-background);
+    }
