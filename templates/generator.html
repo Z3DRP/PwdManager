@@ -1,3 +1,4 @@
+<!--this card wont flip over on hover it needs to flip over onClick -->
 {% extends 'base.html' %}
 {% block content %}
 <div class="flip-card">
@@ -7,12 +8,13 @@
             <!--input for number of characters-->
             <input label="Length" type="number"/>
             <!--combo box for number of letters and number of numbers-->
-            <button>Generate Password</button>
+            <button onclick="handlePasswordGeneration">Generate Password</button>
         </div>
-        <div class="flip-card-back">
-            <p class="title">BACK</p>
-            <p>Leave Me</p>
-        </div>
+        {{% if pwdGenerated }}
+            <div class="flip-card-back">
+                <p class="title">{{% generatedPwd %}}</p>
+            </div>
+        {{% endif %}}
     </div>
 </div>
 {% endblock %}
