@@ -8,7 +8,6 @@ db = {"usr": db_name.user, "account": db_name.accounts}
 # not sure if line 8 works if now just pass instring or dot notation
 # ie client["users"] or client.users
 
-
 @staticmethod
 def updateUserCollection(usr_list, database):
     try:
@@ -36,32 +35,6 @@ def updateUserCollection(usr_list, database):
 
 
 @staticmethod
-def updateAccountsCollection(account_list, database):
-    try:
-        was_success = False
-        err_txt = 'an error occurred while inserting '
-        success_txt = ' insertion was successfully'
-        accountCollection = database.accounts
-        if len(account_list) < 1:
-            raise ValueError('account list must contain at least one record')
-        else:
-            if len(account_list) == 1:
-                singleResult = accountCollection.insert_one(account_list[0])
-                was_success = singleResult is None
-                print(err_txt + 'account record') if singleResult is not None else print('account' + success_txt)
-
-            if len(account_list) > 1:
-                multiResult = accountCollection.insert_many(account_list)
-                was_success = multiResult is None
-                print(err_txt + 'account records') if multiResult is not None else print('accounts' + success_txt)
-
-    except Exception as err:
-        print(err)
-        raise
-    return was_success
-
-
-@staticmethod
 def insert_user(user):
     try:
         was_success = False
@@ -80,7 +53,12 @@ def insert_user(user):
 
 
 @staticmethod
-def get_user_id(usrname):
+def fetch_user(username):
+    pass
+
+
+@staticmethod
+def fetch_user_id(usrname):
     try:
         if usrname is None:
             raise ValueError('Username is required to find user id')
@@ -98,18 +76,23 @@ def get_user_id(usrname):
 
 
 @staticmethod
+def update_user(user):
+    pass
+
+
+@staticmethod
+def update_many_users(user_list):
+    pass
+
+
+@staticmethod
 def authenticate_user(username, plain_txt_pwd):
     # get
     pass
+
 
 @staticmethod
 def compare_passwords(username, plain_txt):
     pass
 
-@staticmethod
-def store_keys(userid, privatekey, publickey):
-    pass
 
-@staticmethod
-def get_public_key(userid, username):
-    pass
