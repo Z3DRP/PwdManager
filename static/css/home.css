@@ -1,78 +1,114 @@
-.container {
-  position: relative;
-  font-family: sans-serif;
+:root {
+    --jaz-background: black;
+}
+body {
+    background-color: var(--jaz-background);
 }
 
-.container::before, .container::after {
-  content: "";
-  background-color: #fab5704c;
-  position: absolute;
-}
-
-.container::before {
-  border-radius: 50%;
-  width: 6rem;
-  height: 6rem;
-  top: 30%;
-  right: 7%;
-}
-
-.container::after {
-  content: "";
-  position: absolute;
-  height: 3rem;
-  top: 8%;
-  right: 5%;
-  border: 1px solid;
-}
-
-.container .box {
-  width: 11.875em;
-  height: 15.875em;
-  padding: 1rem;
-  background-color: rgba(255, 255, 255, 0.074);
-  border: 1px solid rgba(255, 255, 255, 0.222);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  border-radius: .7rem;
-  transition: all ease .3s;
-}
-
-.container .box {
+.card {
+  width: 190px;
+  height: 254px;
+  background: black;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: 0.2s;
 }
 
-.container .box .title {
-  font-size: 2rem;
-  font-weight: 500;
-  letter-spacing: .1em
+.card:hover {
+  transform: scale(1.05);
+  transition: 0.2s;
+  filter: drop-shadow(0px 0px 10px rgb(0, 247, 255));
 }
 
-.container .box div strong {
-  display: block;
-  margin-bottom: .5rem;
+.card::after {
+  content: "scanning";
+  height: fit-content;
+  width: 100%;
+  color: lightskyblue;
+  position: absolute;
+  z-index: 2;
+  bottom: 15%;
+  text-align: center;
+  animation: 2s dots  infinite;
 }
 
-.container .box div p {
-  margin: 0;
-  font-size: .9em;
-  font-weight: 300;
-  letter-spacing: .1em;
+.card::before {
+  content: "";
+  height: 0.1em;
+  width: 80%;
+  border-radius: 10px;
+  background-color: rgb(00, 200, 255);
+  position: absolute;
+  z-index: 2;
+  bottom: 10%;
+  animation: 4s grow  infinite;
+  align-self: flex-start;
+  margin-left: 10%;
+  filter: drop-shadow(0px 0px 10px #3fefef) drop-shadow(0px 0px 10px #3fefef);
 }
 
-.container .box div span {
-  font-size: .7rem;
-  font-weight: 300;
+.card svg {
+  filter: drop-shadow(0px 0px 10px #3fefef) drop-shadow(0px 0px 50px #3fefef);
 }
 
-.container .box div span:nth-child(3) {
-  font-weight: 500;
-  margin-right: .2rem;
+path {
+  stroke-dasharray: 90;
+  animation: loop 4s infinite;
 }
 
-.container .box:hover {
-  box-shadow: 0px 0px 20px 1px #ffbb763f;
-  border: 1px solid rgba(255, 255, 255, 0.454);
+@keyframes loop {
+  0% {
+    stroke-dashoffset: 50;
+    stroke-dasharray: 90;
+  }
+
+  50% {
+    stroke-dashoffset: 100;
+    ;
+        stroke-dasharray: 50;
+  }
+
+  100% {
+    stroke-dashoffset: 50;
+    stroke-dasharray: 90;
+  }
+}
+
+@keyframes dots {
+  0% {
+    content: "scanning."
+  }
+
+  25% {
+    content: "scanning.."
+  }
+
+  50% {
+    content: "scanning..."
+  }
+
+  75% {
+    content: "scanning"
+  }
+
+  100% {
+    content: "scanning."
+  }
+}
+
+@keyframes grow {
+  0% {
+    width: 0%;
+  }
+
+  50% {
+    width: 80%
+  }
+
+  100% {
+    width: 0%;
+  }
 }

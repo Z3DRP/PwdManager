@@ -1,0 +1,21 @@
+{% block content %}
+    <h1>Create Account</h1>
+
+    <form method="Post">
+        {{ form.hidden.tag() }}
+
+        {{ form.username.label(class="form-label") }}
+        {{ form.username(class="form-text") }}
+
+        {{ form.email.label(class="form-label") }}
+        {{ form.email(clas="form-text") }}
+
+        {{ form.pwd.label(class="form-label") }}
+        {{ form.pwd(class="form-control") }}
+
+        {{ form.confirm_pwd.label(class="form-label") }}
+        {{ form.confirm_pwd(class="form-control") }}
+
+        {{ form.submit(class="btn jaz-button")}}
+    </form>
+{% endblock %}

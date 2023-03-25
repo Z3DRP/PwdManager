@@ -2,9 +2,9 @@
 {% extends 'base.html' %}
 {% block content %}
 <!-- if might have to change-->
-{{% if accounts.length > 0 %}}
+{% if accounts.length > 0 %}
 {% for account in accounts %}
-    <div class="flip-card" data-id="{{% account.id %}}">
+    <div class="flip-card" data-id="{% account.id %}">
         <div class="flip-card-inner">
             <div class="flip-card-front">
                 <p class="title">{{% account.Name %}}</p>
@@ -19,20 +19,20 @@
         </div>
     </div>
 {% endfor %}
-{% endif %}}
+{% endif %}
 
 {{% if accounts.length == 0 %}}
 <!-- for now just use a blank card-->
-    <div class="flip-card" data-id="{{% account.id %}}">
+    <div class="flip-card" data-id="{% account.id %}">
         <div class="flip-card-inner">
             <div class="flip-card-front">
                 <p class="title">{{% account.Name %}}</p>
                 <button type="submit" class="jaz-button" onclick="handleDelete">Delete</button>
             </div>
             <div class="flip-card-back">
-                <input type="text" value="{{% account.username %}}"/>
-                <input type="text" value="{{% account.email %}}"/>
-                <input type="text" value="{{% account.password %}}"/>
+                <input type="text" value="{% account.username %}"/>
+                <input type="text" value="{% account.email %}"/>
+                <input type="text" value="{% account.password %}"/>
                 <button type="submit" class="jaz-button" onclick="handleEdit">edit</button>
             </div>
         </div>

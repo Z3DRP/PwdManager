@@ -14,11 +14,15 @@
             <div class="align-middle">
                 <center>
                     {% include 'login_card.html' %}
+
+                    % if failed == 'failed' % }}
+                    <!-- for now display error this way eventually make it js maybe -->
+                    {% include 'failed_login.html' %}
+                    {% endif %}
                 </center>
             </div>
         <!--login-->
         </div>
-
     <!--debug-->
     {% if config['DEBUG'] %}
         {% include "_debug.html" %}
