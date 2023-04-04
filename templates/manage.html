@@ -1,40 +1,67 @@
 <!-- eventually pull html out into manage card but need to pass in accounts -->
+<!-- TODO this will need some changing needs converted to Flask WTF forms and to find out how to specify value of flask form field -->
 {% extends 'base.html' %}
 {% block content %}
 <!-- if might have to change-->
-{% if accounts.length > 0 %}
 {% for account in accounts %}
-    <div class="flip-card" data-id="{% account.id %}">
+    <div class="flip-card" data-id="{{ account.account_id }}">
         <div class="flip-card-inner">
             <div class="flip-card-front">
-                <p class="title">{{% account.Name %}}</p>
+                <p class="title">{{ account.name }}</p>
                 <button type="submit" class="jaz-button" onclick="handleDelete">Delete</button>
             </div>
             <div class="flip-card-back">
-                <input type="text" value="{{% account.username %}}"/>
-                <input type="text" value="{{% account.email %}}"/>
-                <input type="text" value="{{% account.password %}}"/>
-                <button type="submit" class="jaz-button" onclick="handleEdit">edit</button>
+                <form method="POST">
+                    <div class="form-group">
+                        <input type="text" value="{{ account.username }}"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" value="{{ account.email }}"/>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" value="{{ account.password }}"/>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="jaz-button" onclick="handleEdit">edit</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+{% else %}
+<!-- if accounts does not have anything in it -->
+<div class="flip-card" data-id="0">
+    <div class="fli-card-inner">
+        <div clas="flip-card-front">
+            <p class="title">New Account</p>
+            <button type="submit" class="jaz-button" onclick="handleDelete">Delete</button>
+        </div>
+        <div class="flip-card-back">
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.account_name.label }}
+                    {{ form.account_name() }}
+                </div>
+                <div class="form-group">
+                    {{ form.username.label }}
+                    {{ form.username() }}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label }}
+                    {{ form.email() }}
+                </div>
+                <div class="form-group">
+                    {{ form.pwd.label }}
+                    {{ form.pwd() }}
+                </div>
+                <div class="form-group">
+                    {{ form.create(class="jaz-button") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endfor %}
-{% endif %}
-
-{{% if accounts.length == 0 %}}
-<!-- for now just use a blank card-->
-    <div class="flip-card" data-id="{% account.id %}">
-        <div class="flip-card-inner">
-            <div class="flip-card-front">
-                <p class="title">{{% account.Name %}}</p>
-                <button type="submit" class="jaz-button" onclick="handleDelete">Delete</button>
-            </div>
-            <div class="flip-card-back">
-                <input type="text" value="{% account.username %}"/>
-                <input type="text" value="{% account.email %}"/>
-                <input type="text" value="{% account.password %}"/>
-                <button type="submit" class="jaz-button" onclick="handleEdit">edit</button>
-            </div>
-        </div>
-    </div>
+<button class="btn btn-primary mt-5 mb-5" onclick="handleAddAccount">Add Account</button>
 {% endblock %}

@@ -86,7 +86,7 @@ def get_user_id(usrname):
             raise ValueError('Username is required to find user id')
         else:
             usrCollection = db['users']
-            usr = usrCollection.find_ome({'username': usrname})
+            usr = usrCollection.find_one({'username': usrname})
             if usr is None:
                 print('No user was found for username: ' + usrname)
             else:

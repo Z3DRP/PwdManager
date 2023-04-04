@@ -1,79 +1,33 @@
-<!--use this after everything is setup for animation form needs to hide when expand-->
-
-<!--<div class="card">-->
-<!--  <div class="card-header">-->
-<!--    <h1>Login</h1>-->
-<!--  </div>-->
-<!--    <div id="card-form" class="card-body" onmouse="show()" onmouseout="hide()">-->
-<!--        <form >-->
-<!--          <div class="form-group">-->
-<!--            <label for="username">Username</label>-->
-<!--            <input type="text" id="username" name="username" required="">-->
-<!--          </div>-->
-<!--          <div class="form-group">-->
-<!--            <label for="password">Password</label>-->
-<!--            <input type="password" id="password" name="password" required="">-->
-<!--          </div>-->
-<!--          <div class="form-group">-->
-<!--            <button type="submit" class="login-button">Login</button>-->
-<!--          </div>-->
-<!--        </form>-->
-<!--  </div>-->
-<!--</div>-->
-
-<!--use this below temparry just to get things to work-->
-<!--<div class="d-flex flex-column min-vh-100 justify-content-center align-items-center">-->
-<!--  <div class="login-card">-->
-<!--    <div class="card-header">-->
-<!--      <h1>Login</h1>-->
-<!--    </div>-->
-<!--    <div class="card-body">-->
-<!--      <form>-->
-<!--        <div class="form-group">-->
-<!--          <label for="username">Username</label>-->
-<!--          <input type="text" id="username" name="username" required="">-->
-<!--        </div>-->
-<!--        <div class="form-group">-->
-<!--          <label for="password">Password</label>-->
-<!--          <input type="password" id="password" name="password" required="">-->
-<!--        </div>-->
-<!--        <div class="form-group">-->
-<!--          &lt;!&ndash;right now for testing use ancorh&ndash;&gt;-->
-<!--          <button type="submit" class="login-button" href="{{ url_for('home') }}">Login</button>-->
-<!--          <div><a class="jaz-button" href="{{ url_for('home')}}">Goto Home</a></div>-->
-<!--        </div>-->
-<!--      </form>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->
-
-# flask wtf
-{% block content %}
-    <div class="d-flex flex-column min-vh-100 justify-content-center align-items-center">
-    <div class="login-card">
-      <div class="card-header">
-        <h1>Login</h1>
-      </div>
-      <div class="card-body">
-        <form method="Post">
-          <div class="form-group">
-            {{ form.hidden.tag }}
-            {{ form.username.label }}
-            {{ form.username() }}
-          </div>
-          <div class="form-group">
-            {{ form.pwd.label }}
-            {{ form.pwd() }}
-          </div>
-          <div class="form-group">
-            <!--right now for testing use ancorh-->
-            {{ form.login(class="btn jaz-button") }}
-          </div>
-          <div class="form-group">
-            <a href="{{url_for('register')}}">Create Account</a>
-          </div>
-        </form>
-      </div>
+<div class="d-flex flex-column min-vh-100 justify-content-center align-items-center">
+  <div class="login-card">
+    <div class="card-header">
+      <h1>Login</h1>
+    </div>
+    <div class="card-body">
+      <form method="POST">
+        <div class="form-group">
+          {{ form.hidden_tag() }}
+          {{ form.username.label }}
+          {{ form.username() }}
+        </div>
+        <div class="form-group">
+          {{ form.pwd.label }}
+          {{ form.pwd() }}
+        </div>
+        <div class="form-group">
+          {{ form.login(class="btn jaz-button") }}
+        </div>
+        <div class="form-group">
+          <a href="{{url_for('register')}}">Create Account</a>
+        </div>
+      </form>
     </div>
   </div>
-{% endblock %}
+</div>
+<!--this is for development only remove once done-->
+{% if config['DEBUG'] %}
+<div class="text-center mb-5">
+  <a href="{{ url_for('manage', usrname='devUsr') }}" class="btn btn-secondary">Dev Login</a>
+  <br>
+</div>
+{% endif %}

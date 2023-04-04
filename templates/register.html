@@ -12,28 +12,38 @@
     <title>Base JAS Pwd Manager Registration</title>
   </head>
   <body>
-    <br/>
     <div class="container">
         {% block content %}
             <h1>Create Account</h1>
-
-            <form method="Post">
-                {{ form.hidden.tag() }}
-
-                {{ form.username.label(class="form-label") }}
-                {{ form.username(class="form-text") }}
-
-                {{ form.email.label(class="form-label") }}
-                {{ form.email(clas="form-text") }}
-
-                {{ form.pwd.label(class="form-label") }}
-                {{ form.pwd(class="form-control") }}
-
-                {{ form.confirm_pwd.label(class="form-label") }}
-                {{ form.confirm_pwd(class="form-control") }}
-
-                {{ form.submit(class="btn jaz-button")}}
-            </form>
+            <div class="card">
+                {{ form.hidden_tag() }}
+                  <div class="card-header">
+                    Register
+                  </div>
+                  <div class="card-body">
+                      <form method="POST">
+                          <div class="mb-3">
+                              {{ form.username.label(class="form-label") }}
+                              {{ form.username(class="form-text") }}
+                          </div>
+                          <div class="mb-3">
+                              {{ form.email.label(class="form-label") }}
+                              {{ form.email(clas="form-text") }}
+                            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                          </div>
+                          <div class="mb-3">
+                              {{ form.pwd.label(class="form-label") }}
+                              {{ form.pwd(class="form-control") }}
+                          </div>
+                          <div class="mb-3">
+                              {{ form.confirm_pwd.label(class="form-label") }}
+                              {{ form.confirm_pwd(class="form-control") }}
+                          </div>
+                          {{ form.submit(class="btn jaz-button")}}
+                       </form>
+                      
+                 </div>
+            </div>
         {% endblock %}
     </div>
 

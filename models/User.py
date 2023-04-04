@@ -2,17 +2,18 @@ import rsa
 from random import randint, seed
 from werkzeug.security import generate_password_hash, check_password_hash
 from data_access import user_db, auth_db
+from utils.random_generator import generateId
 
 
 class User:
     # look at flask friday playlist to look at hashing pwds so
     # public and private keys dont have to be tracked
     def __init__(self, usrname=None, email=None):
-        self._usrid = self.generate_id()
-        self._username = usrname
-        self._email = email
+        self.usrid = generateId()
+        self.username = usrname
+        self.email = email
         #v1 pwd
-        self._encrypted_pwd = None
+        self.encrypted_pwd = None
         # self.public_key, self._private_key = self.get_keys()
 
         # v2 of password encryption
@@ -23,9 +24,9 @@ class User:
         try:
             was_success = None
             public_key, private_key = self.get_keys()
-            self._encrypted_pwd = self.encrypt_pwd(plaintxt, public_key)
-            if self._encrypted_pwd is not None:
-                was_success = auth_db.store_keys(self._usrid, private_key, public_key)
+            self.encrypted_pwd = self.encrypt_pwd(plaintxt, public_key)
+            if self.encrypted_pwd is not None:
+                was_success = auth_db.store_keys(self.usrid, private_key, public_key)
                 print('success:: ' + was_success)
         except Exception as err:
             print(err)
@@ -60,7 +61,7 @@ class User:
         return rsa.encrypt(plaintxt.encode(), publickey)
 
     def decrypt_pwd(self, encrypted_pwd, privatekey):
-        return rsa.decrypt(encrypted_pwd, self._private_key).decode()
+        return rsa.decrypt(encrypted_pwd, self.private_key).decode()
 
     # decryption to test if public key will work it should
     def decrypt_pwd_public(self, encrypted_pwd, public_key):
@@ -80,7 +81,7 @@ class User:
                     raise ValueError('Unable to authenticate user')
         except Exception as err:
             print(err)
-        return self.decrypt_pwd(usr["_username"], privatekey) == entered_pwd
+        return self.decrypt_pwd(usr["username"], privatekey) == entered_pwd
 
 
     #v2 pwd encryption
@@ -106,26 +107,21 @@ class User:
     #     return check_password_hash(usr['_pwd_hash'], plaintxt)
 
     #end v2 pwd encryption
+    def get_user_id(self):
+        return self.usrid
+
     def set_username(self, usrname):
-        self._username = usrname
+        self.username = usrname
 
     def get_username(self):
-        return self._username
+        return self.username
 
     def set_email(self, email):
-        self._email = email
+        self.email = email
 
     def get_email(self):
-        return self._email
+        return self.email
 
-    def generate_id(self):
-        seed(1)
-        generatedId = ''
-        # generate id in 00000xxx format
-        for number in range(5):
-            generatedId += randint(1, 26)
-        for letter in range(3):
-            generatedId += chr(randint(0, 9))
-        return generatedId
-
+    def get_password(self):
+        return self.encrypted_pwd
     # maybe add isValid method to check data is correct types

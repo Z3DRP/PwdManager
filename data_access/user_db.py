@@ -1,20 +1,18 @@
 from pymongo import MongoClient
-from dev_db import get_database
-db_name = get_database()
+from data_access.dev_db import get_database
+from messages.Success_Messages import Success as success
+from messages.Error_Messages import Errors as error
 #probably should make these static methods
 # when u pass in string you should get the db collection
 # not sure if it works if not use db_name['user']
-db = {"usr": db_name.user, "account": db_name.accounts}
 # not sure if line 8 works if now just pass instring or dot notation
 # ie client["users"] or client.users
 
 @staticmethod
-def updateUserCollection(usr_list, database):
+def InserteUserCollection(usr_list, database):
     try:
         was_success = False
-        err_txt = 'an error occurred while inserting '
-        success_txt = ' insertion was successfully'
-        userCollection = database.users
+        userCollection = get_db()
         if len(usr_list) < 1:
             raise ValueError('User list must contain at least one record')
         else:
@@ -22,11 +20,11 @@ def updateUserCollection(usr_list, database):
             if len(usr_list) == 1:
                 singleResult = userCollection.insert_one(usr_list[0])
                 was_success = singleResult is None
-                print(err_txt + 'user record') if singleResult is not None else print('account' + success_txt)
+                print(success.db_success('insert', 'user')) if singleResult is not None else print(error.db_error('insert', 'user'))
             if len(usr_list) > 1:
                 multiResult = userCollection.insert_many(usr_list)
                 was_success = multiResult is None
-                print(err_txt + 'user records') if multiResult is not None else print('users' + success_txt)
+                print(success.db_success('insert_p', 'users')) if multiResult is not None else print(error.db_error('insert', 'users'))
 
     except Exception as err:
         print(err)
@@ -41,7 +39,7 @@ def insert_user(user):
         success_txt = 'User successfully inserted'
         err_txt = 'A error occurred while inserting user'
         if user is not None:
-            collection = db['users']
+            collection = get_db()
             singleResult = collection.insert_one(user)
             print(success_txt) if singleResult is not None else print(err_txt)
             was_success = singleResult is None
@@ -63,7 +61,7 @@ def fetch_user_id(usrname):
         if usrname is None:
             raise ValueError('Username is required to find user id')
         else:
-            usrCollection = db['users']
+            usrCollection = get_db()
             usr = usrCollection.find_ome({'username': usrname})
             if usr is None:
                 print('No user was found for username: ' + usrname)
@@ -77,7 +75,23 @@ def fetch_user_id(usrname):
 
 @staticmethod
 def update_user(user):
-    pass
+    try:
+        userCollection = get_db()
+        result = userCollection.update_one(
+            {'user_id': user.get},
+            {"$set": {
+                'username': user.get_username(),
+                'email': user.get_email(),
+                'password': user.get_password()
+            }},
+            upsert=True
+        )
+        was_success = result.modified_count > 0
+        print(success.db_success('update', 'user')) if was_success else print(error.db_error('update', 'user'))
+    except Exception as err:
+        print(err)
+
+    return was_success
 
 
 @staticmethod
@@ -96,3 +110,6 @@ def compare_passwords(username, plain_txt):
     pass
 
 
+def get_db():
+    db = get_database()
+    return db.users

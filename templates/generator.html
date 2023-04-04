@@ -6,15 +6,34 @@
         <div class="flip-card-front">
             <p class="title">Generate Password</p>
             <!--input for number of characters-->
-            <input label="Length" type="number"/>
-            <!--combo box for number of letters and number of numbers-->
-            <button onclick="handlePasswordGeneration">Generate Password</button>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.pwd_length.label }}
+                    {{ form.pwd_length() }}
+                </div>
+                <div class="form-group">
+                    {{ form.letter_count.label }}
+                    {{ form.letter_count() }}
+                </div>
+                <div class="form-group">
+                    {{ form.number_count.label }}
+                    {{ form.number_count() }}
+                </div>
+                <div class="form-group">
+                    {{ form.symbol_count.label }}
+                    {{ form.symbol_count() }}
+                </div>
+                <div class="form-group">
+                    {{ form.generate(class="jaz-button") }}
+                </div>
+            </form>
         </div>
-        {{% if pwdGenerated %}}
+        {% if pwdGenerated %}
             <div class="flip-card-back">
-                <p class="title">{{% generatedPwd %}}</p>
+                <p class="title">{ generatedPwd }</p>
             </div>
-        {{% endif %}}
+        {% endif %}
     </div>
 </div>
 {% endblock %}

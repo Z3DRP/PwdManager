@@ -1,9 +1,17 @@
 from flask import Flask, render_template, redirect, url_for, flash
 from forms import login_form, registration_form, account_form, generator_form
+from forms.registration_form import RegistrationForm as registerForm
+from forms.login_form import LoginForm as loginForm
+from forms.account_form import AccountForm as accountForm
+from forms.generator_form import GeneratorForm as generatorForm
 from models.User import User
 from models.Account import Account
-from data_access import db
+from data_access import user_db, acount_db
 from utils import random_generator
+
+# TODO when opening the app again set these environment variables so server doesnt have to be restarted after each change
+# export FLASK_ENV=development
+# export FLASK_APP=app.py
 
 app = Flask(__name__)
 # should be moved out
@@ -16,7 +24,7 @@ account = {""}
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
     # create user save usr to db then redirect to home
-    form = registration_form()
+    form = registerForm()
     # validate form will happen after submit/register
     if form.validate_on_submit():
         # EqaulTo validator validates passwords match dont need to add the logic
@@ -28,7 +36,7 @@ def register():
             usr = User(usrname, email)
             usr.set_password(pwd)
             # v2 password set usr.set_password(pwd, True)
-            successful_insert = db.insert_user(usr)
+            successful_insert = user_db.insert_user(usr)
             if successful_insert:
                 return redirect(url_for('home', usrname=usrname))
             else:
@@ -41,44 +49,53 @@ def register():
         return render_template('register.html', form=form)
 
 
-@app.route('/<failed>', methods=['GET', 'POST'])
-def login(failed):
+@app.route('/', methods=['GET', 'POST'])
+def login():
     # change to jwt authentication
-    form = login_form()
+    form = loginForm()
     if form.validate_on_submit():
         usrname = form.username.data
         pwd = form.pwd.data
         # v2 pwd set usr.set_password(pwd, False)
 
-        # will output values some where im not sure where
+        # flash will output values somewhere im not sure where
         # %s might need changed
         flash('username: %s' % form.username.data)
         flash('plaintext pw: %s' % form.pwd.data)
         isMatch = User.verify_password(usrname, pwd)
+
         if isMatch:
-            return redirect(url_for('home', usrname=usrname))
+            auth_failed = False
+            return redirect(url_for('manage', usrname=usrname))
         # might be redundant
         else:
-            return render_template('login_html', failed='failed')
+            auth_failed = True
+            return render_template('login_html', form=form)
     else:
-        return render_template('login.html', failed='unknown')
-
-
-@app.route('/home/<usrname>')
-def home(usrname):
-    return render_template('home.html')
+        return render_template('login.html', form=form)
 
 
 @app.route('/manage/<usrname>', methods=['GET', 'POST'])
 def manage(usrname):
     # get accounts then create list of all accounts
-    account = Account()
-    return render_template('manage.html')
+    currentUsr = usrname
+    form = accountForm()
+    # TODO remove this after dev done
+    dev_env = True
+    if not dev_env:
+        usr_id = user_db.fetch_user_id(usrname)
+        usr_accounts = acount_db.fetch_user_accounts(usr_id, usrname)
+    # else:
+    #     usr_id = 0
+    #     account = Account('00000aaa', 0, 'gmail', 'zdev1@example.com', 'plainTxt')
+    #     accounts.append(account)
+    return render_template('manage.html', usrname=usrname, form=form)
 
 
 @app.route('/generator/', methods=['GET', 'POST'])
 def generator():
-    form = generator_form()
+    pwdGenerated = False
+    form = generatorForm()
     if form.validate_on_submit():
         pwd_len = form.pwd_length.data
         letter_count = form.letter_count.data
@@ -93,7 +110,9 @@ def generator():
         )
         form.generated_pwd.data = gen_pwd
         if gen_pwd is not None:
-            return render_template('generator.html')
+            pwdGenerated = True
+            return render_template('generator.html', form=form)
         else:
-            return render_template('generator.html')
-    return render_template('generator.html')
+            pwdGenerated = False
+            return render_template('generator.html', form=form)
+    return render_template('generator.html', form=form)

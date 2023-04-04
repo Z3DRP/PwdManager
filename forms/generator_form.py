@@ -10,3 +10,4 @@ class GeneratorForm(FlaskForm):
     number_count = IntegerField('Number Count')
     symbol_count = IntegerField('Symbol Count')
     generated_pwd = StringField()
+    generate = SubmitField('Generate')

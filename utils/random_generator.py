@@ -2,7 +2,7 @@ from random import randint, seed, random
 
 
 @staticmethod
-def generateId(self):
+def generateId():
     seed(1)
     generatedId = None
     # generate id in 00000xxx format
