@@ -125,3 +125,8 @@ class User:
     def get_password(self):
         return self.encrypted_pwd
     # maybe add isValid method to check data is correct types
+
+    def plain_text_password(self):
+        self.encrypted_pwd
+
+

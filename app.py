@@ -12,6 +12,8 @@ from utils import random_generator
 # TODO when opening the app again set these environment variables so server doesnt have to be restarted after each change
 # export FLASK_ENV=development
 # export FLASK_APP=app.py
+# run with
+# flask run
 
 app = Flask(__name__)
 # should be moved out
@@ -20,7 +22,7 @@ app.config['SECRET_KEY'] = 'something for not eventually make byte string maybe'
 usrID = ''
 accounts = []
 account = {""}
-
+currentUsr = None
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
     # create user save usr to db then redirect to home
@@ -66,7 +68,8 @@ def login():
 
         if isMatch:
             auth_failed = False
-            return redirect(url_for('manage', usrname=usrname))
+            accountform = accountForm()
+            return redirect(url_for('manage', usrname=usrname, form=accountform))
         # might be redundant
         else:
             auth_failed = True
@@ -78,6 +81,7 @@ def login():
 @app.route('/manage/<usrname>', methods=['GET', 'POST'])
 def manage(usrname):
     # get accounts then create list of all accounts
+    global currentUsr
     currentUsr = usrname
     form = accountForm()
     # TODO remove this after dev done

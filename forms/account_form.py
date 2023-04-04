@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Email
 class AccountForm(FlaskForm):
     account_name = StringField('Account Name', validators=[DataRequired()])
     username = StringField('Username')
-    email = EmailField('Email', validators=[Email()])
+    email = EmailField('Email', validators=[DataRequired(), Email()])
     pwd = StringField('Password')
     create = SubmitField('Create Account')
     # look up select fields and selectFields multiple if use select
