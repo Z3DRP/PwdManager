@@ -52,7 +52,7 @@ def encrypt_data(key, unencrypted_data, salt):
 
 
 # use to decrypt stored account information
-def decrypt_data(key, encrypted_data):
+def decrypt_data(key, encrypted_data, salt):
     # define encryption algorithm
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
@@ -83,6 +83,6 @@ print("key: ", key)
 print("unencrypted_data: ", unencrypted_data)
 encrypted_data = encrypt_data(key, unencrypted_data, salt)
 print("encrypted_data: ", encrypted_data)
-decrypted_data = decrypt_data(key, encrypted_data)
+decrypted_data = decrypt_data(key, encrypted_data, salt)
 print("decrypted_data: ", decrypted_data)
 """
