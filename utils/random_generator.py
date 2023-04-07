@@ -9,7 +9,7 @@ character_types = ['letter', 'number', 'symbol']
 
 
 @staticmethod
-def generateId():
+def generate_id():
     # set seed to none for random generation each operation
     seed()
     # initialize empty generated_id

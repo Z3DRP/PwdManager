@@ -7,45 +7,60 @@ from forms.generator_form import GeneratorForm as generatorForm
 from models.User import User
 from models.Account import Account
 from data_access import user_db, acount_db
-from utils import random_generator
+from utils import random_generator, authentication, encryption
 
-# TODO when opening the app again set these environment variables so server doesnt have to be restarted after each change
-# export FLASK_ENV=development
-# export FLASK_APP=app.py
-# run with
-# flask run
+
+# NOTE: run the app with flask run
 
 app = Flask(__name__)
-# should be moved out
-# could mak another file that generates a random secrect with import secrets secrets.token_hex(16)
-app.config['SECRET_KEY'] = 'something for not eventually make byte string maybe'
+# define flask environment variables
+app.config['FLASK_ENV'] = 'development'
+app.config['FLASK_APP'] = 'app.py'
+# TODO: add secret_genrator to random_generator utility with import secrets secrets.token_hex(16)
+# set secret key to none until user is logged in
+app.config['SECRET_KEY'] = b"secret_key"
+
 usrID = ''
 accounts = []
 account = {""}
-currentUsr = None
+
+# current_user should be user object; set on login or register
+current_user = None
+
+# create user save usr to db then redirect to home
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
-    # create user save usr to db then redirect to home
+    # allow access to global variable current_user
+    global current_user
     form = registerForm()
-    # validate form will happen after submit/register
+    # validation occurs on form submission
     if form.validate_on_submit():
         # EqaulTo validator validates passwords match dont need to add the logic
         try:
-            usrname = form.username.data
+            # get user info to register new user
+            username = form.username.data
             email = form.email.data
-            pwd = form.pwd.data
-            # confirmed_pwd = form.confirm_pwd.data
-            usr = User(usrname, email)
-            usr.set_password(pwd)
-            # v2 password set usr.set_password(pwd, True)
-            successful_insert = user_db.insert_user(usr)
+            password = form.password.data
+            # initialize new user object
+            current_user = User(username, email)
+            # set user info and encrypt password
+            current_user.set_salt()
+            current_user.set_password(password)
+            current_user.set_key()
+            current_user.set_user_id()
+            # save user to database
+            successful_insert = user_db.insert_user(current_user)
+            # if successful, log user in, send success message, and set secret key to user's key
             if successful_insert:
-                return redirect(url_for('home', usrname=usrname))
+                flash("Logged in successfully!")
+                app.config['SECRET_KEY'] = current_user.get_key()
+                # redirect to home page pass through entire current_user object
+                return redirect(url_for('home', current_user=current_user, username = current_user.username))
             else:
-                # need to show error if insert failed
+                flash("Failed to register user!", category="error")
                 return render_template('register.html', form=form)
         except Exception as err:
-            # figure out way to display error and success to usr
+            flash("Failed to register user!", category="error")
             print(err)
     else:
         return render_template('register.html', form=form)
@@ -53,70 +68,96 @@ def register():
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
+    # allow access to global current_user object
+    global current_user
     # change to jwt authentication
     form = loginForm()
     if form.validate_on_submit():
-        usrname = form.username.data
-        pwd = form.pwd.data
-        # v2 pwd set usr.set_password(pwd, False)
-
+        username = form.username.data
+        plain_text_password = form.password.data
+        # NOTE flash message goes from server to client, can show success/error with them. Not sure what these flashes do.
         # flash will output values somewhere im not sure where
         # %s might need changed
-        flash('username: %s' % form.username.data)
-        flash('plaintext pw: %s' % form.pwd.data)
-        isMatch = User.verify_password(usrname, pwd)
-
-        if isMatch:
-            auth_failed = False
-            accountform = accountForm()
-            return redirect(url_for('manage', usrname=usrname, form=accountform))
-        # might be redundant
+        #flash('username: %s' % form.username.data)
+        #flash('plaintext pw: %s' % form.password.data)
+        # lookup username, return salt; if no user found return error
+        salt = user_db.fetch_user_salt(username)
+        if salt is None:
+            flash("Could not find user %s" % username)
         else:
-            auth_failed = True
+            #if user found, use salt to encrypt entered password
+            encryption.encrypt_password(plain_text_password, salt)
+        # check to see if user's entered password is correct
+        is_match = authentication.verify_password(username, plain_text_password)
+        # if password is correct, log user in
+        if is_match:
+            accountform = accountForm()
+            # fetch user info from database
+            user_info = user_db.fetch_user(username)
+            # initialize user object using user info from database
+            current_user = User(username, user_info['email'])
+            current_user.salt = user_info['salt']
+            current_user.user_id = user_info['user_id']
+            current_user.set_key(plain_text_password)
+            # set secret key to user's key
+            app.config['SECRET_KEY'] = current_user.get_key()
+            # send success message to user
+            flash("Logged in successfully!")
+            # redirect to management page sending through entire current_user object
+            return redirect(url_for('manage', current_user=current_user, username = current_user.username, form=accountform))
+        # on failed login, send error message, return to login page
+        else:
+            flash("Failed to login!", category="error")
             return render_template('login_html', form=form)
+    # on failed login, send error message, return to login page
     else:
+        flash("Failed to login!", category="error")
         return render_template('login.html', form=form)
 
 
-@app.route('/manage/<usrname>', methods=['GET', 'POST'])
-def manage(usrname):
-    # get accounts then create list of all accounts
-    global currentUsr
-    currentUsr = usrname
-    form = accountForm()
-    # TODO remove this after dev done
+@app.route('/manage/<username>', methods=['GET', 'POST'])
+def manage(username):
+    # allow access to global variables
+    global current_user
+    global accounts
+    global dev_env
+    # set dev, remove when done
     dev_env = True
+    form = accountForm()
     if not dev_env:
-        usr_id = user_db.fetch_user_id(usrname)
-        usr_accounts = acount_db.fetch_user_accounts(usr_id, usrname)
-    # else:
-    #     usr_id = 0
-    #     account = Account('00000aaa', 0, 'gmail', 'zdev1@example.com', 'plainTxt')
-    #     accounts.append(account)
-    return render_template('manage.html', usrname=usrname, form=form)
+        # get list of currentUsr's accounts
+        accounts = acount_db.fetch_user_accounts(current_user.usr_id, current_user.username)
+    else:
+         # create dev_user, add account; remove when done with development
+         current_user = User("dev_user", "hzdkv@example.com")
+         current_user.user_id = "0"
+         account = Account('00000aaa', 0, 'gmail', 'zdev1@example.com', 'plainTxt')
+         accounts.append(account)
+    return render_template('manage.html', current_user=current_user, username = current_user.username, form=form)
 
 
-@app.route('/generator/', methods=['GET', 'POST'])
-def generator():
-    pwdGenerated = False
+@app.route('/generator/<username>', methods=['GET', 'POST'])
+def generator(username):
+    global current_user
     form = generatorForm()
     if form.validate_on_submit():
-        pwd_len = form.pwd_length.data
+        # get password criteria from user
+        password_length = form.password_length.data
         letter_count = form.letter_count.data
         number_count = form.letter_count.data
         symbol_count = form.symbol_count.data
-        # extra_fields = form.extra_fields.data
-        gen_pwd = random_generator.generate_pwd(
-            pwd_len,
+        # generate password with criteria
+        generated_password = random_generator.generate_pwd(
+            password_length,
             letter_count,
             number_count,
             symbol_count
         )
-        form.generated_pwd.data = gen_pwd
-        if gen_pwd is not None:
-            pwdGenerated = True
-            return render_template('generator.html', form=form)
+        # set password form to show generated password
+        form.generated_password.data = generated_password
+        # check is useless if all cases return same redirect
+        if generated_password is not None:
+            return render_template('generator.html', current_user=current_user, form=form)
         else:
-            pwdGenerated = False
-            return render_template('generator.html', form=form)
-    return render_template('generator.html', form=form)
+            return render_template('generator.html', current_user=current_user, form=form)
+    return render_template('generator.html', current_user=current_user, username = current_user.username, form=form)
