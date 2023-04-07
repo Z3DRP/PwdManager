@@ -1,66 +1,95 @@
 <!-- eventually pull html out into manage card but need to pass in accounts -->
 <!-- TODO this will need some changing needs converted to Flask WTF forms and to find out how to specify value of flask form field -->
+
 {% extends 'base.html' %}
 {% block content %}
+
 <!-- if might have to change-->
 {% for account in accounts %}
-<div class="card align-middle" data-id-card="{{acount.account_id}}" style="width: 75%;">
-  <div class="card-body">
-      <div class="card-front">
-          <h5 class="card-title">{{account.name}}</h5>
-      </div>
-      <div class="card-back">
-          <form method="POST">
-                <div class="form-group">
-                    <input type="text" value="{{ account.username }}"/>
-                </div>
-                <div class="form-group">
-                    <input type="text" value="{{ account.email }}"/>
-                </div>
-                <div class="form-group">
-                    <input type="text" value="{{ account.password }}"/>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="jaz-button" onclick="handleEdit">edit</button>
-                </div>
-          </form>
-      </div>
-  </div>
-</div>
-<br>
+
+    <div class="flip-card" data-id=account.account_id>
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                
+                <p class="title">{{ account.name }}</p>
+                
+                <button type="submit" class="jaz-button" onclick="handleDelete">Delete</button>
+            </div>
+            
+            <div class="flip-card-back">
+                
+                <form method="POST">
+                    
+                    <div class="form-group">
+                        {{ form.account.name }}
+                        {{ form.username(value=account.username) }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.account.email }}
+                        {{ form.email(value=account.email) }}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.account.password }}
+                        {{ form.password(value=account.password) }}
+                    </div>
+                    
+                    {{ form.submit }}
+                
+                </form>
+            </div>
+        </div>
+    </div>
+
 {% else %}
+
 <!-- if accounts does not have anything in it -->
-<div class="card align-middle" data-id-card="0" style="width: 75%;">
-  <div class="card-body">
-      <div class="card-front">
-          <h5 class="card-title">VK</h5>
-      </div>
-      <div class="card-back">
-          <form method="POST">
+<div class="flip-card" data-id="0">
+    <div class="fli-card-inner">
+        <div clas="flip-card-front">
+            
+            <p class="title">New Account</p>
+            
+            <button type="submit" class="jaz-button" onclick="handleDelete">Delete</button>
+        </div>
+        
+        <div class="flip-card-back">
+            <form method="POST">
                 {{ form.hidden_tag() }}
+                
                 <div class="form-group">
                     {{ form.account_name.label }}
                     {{ form.account_name() }}
                 </div>
+                
                 <div class="form-group">
                     {{ form.username.label }}
                     {{ form.username() }}
                 </div>
+                
                 <div class="form-group">
                     {{ form.email.label }}
                     {{ form.email() }}
                 </div>
+                
                 <div class="form-group">
                     {{ form.pwd.label }}
                     {{ form.pwd() }}
                 </div>
+                
                 <div class="form-group">
                     {{ form.create(class="jaz-button") }}
+                
                 </div>
-          </form>
-      </div>
-  </div>
+            
+            </form>
+        </div>
+    </div>
 </div>
+
 {% endfor %}
+
 <button class="btn btn-primary mt-5 mb-5" onclick="handleAddAccount">Add Account</button>
+
 {% endblock %}

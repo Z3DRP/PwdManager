@@ -1,6 +1,6 @@
 from random import seed
 from random import randint
-from utils.random_generator import generateId
+from utils.random_generator import generate_id
 
 class Account:
 
@@ -44,7 +44,7 @@ class Account:
         self.extra_field[field_name] = field_value
 
     def get_id(self):
-        return generateId()
+        return generate_id()
 
     def createNewAccount(self, usrId, name, email, password):
         self.account_id = self.get_id()

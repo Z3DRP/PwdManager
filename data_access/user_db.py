@@ -41,8 +41,10 @@ def insert_user(user):
         if user is not None:
             collection = get_db()
             singleResult = collection.insert_one(user)
-            print(success_txt) if singleResult is not None else print(err_txt)
-            was_success = singleResult is None
+            if singleResult is not None:
+                print(success_txt)
+            else:
+                print(err_txt)
         else:
             raise ValueError('User object cannot be empty')
     except Exception as err:
@@ -52,13 +54,35 @@ def insert_user(user):
 
 @staticmethod
 def fetch_user(username):
-    pass
+    try:
+        if username is not None:
+            user_collection = get_db()
+            user = user_collection.find_one({"username": username})
+        else:
+            raise ValueError("Username is required to find user id")
+    except Exception as err:
+        print(err)
+    return user
 
 
 @staticmethod
-def fetch_user_id(usrname):
+def fetch_user_salt(username):
     try:
-        if usrname is None:
+        if username is not None:
+            user_collection = get_db()
+            user = user_collection.find_one({"username": username})
+            user_salt = user["salt"]
+        else:
+            raise ValueError("Username is required to find user salt")
+    except Exception as err:
+        print(err)
+    return user_salt
+
+
+@staticmethod
+def fetch_user_id(username):
+    try:
+        if username is None:
             raise ValueError('Username is required to find user id')
         else:
             usrCollection = get_db()
@@ -66,11 +90,11 @@ def fetch_user_id(usrname):
             if usr is None:
                 print('No user was found for username: ' + usrname)
             else:
-                # dictionary is returned
-                usrId = usr['userId']
+                # set user_id to the user's id
+                user_id = user['userId']
     except Exception as err:
         print(err)
-    return usrId if usrId is not None else ''
+    return user_id
 
 
 @staticmethod
