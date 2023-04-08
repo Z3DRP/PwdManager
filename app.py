@@ -55,6 +55,7 @@ def register():
 def login():
     # change to jwt authentication
     form = loginForm()
+    test_err_msg = 'test error message'
     if form.validate_on_submit():
         usrname = form.username.data
         pwd = form.pwd.data
@@ -67,22 +68,22 @@ def login():
         isMatch = User.verify_password(usrname, pwd)
 
         if isMatch:
+            global currentUsr
+            currentUsr = usrname
             auth_failed = False
             accountform = accountForm()
             return redirect(url_for('manage', usrname=usrname, form=accountform))
         # might be redundant
         else:
             auth_failed = True
-            return render_template('login_html', form=form)
+            return render_template('login_html', form=form, emsg=test_err_msg)
     else:
-        return render_template('login.html', form=form)
+        return render_template('login.html', form=form, emsg=test_err_msg)
 
 
 @app.route('/manage/<usrname>', methods=['GET', 'POST'])
 def manage(usrname):
     # get accounts then create list of all accounts
-    global currentUsr
-    currentUsr = usrname
     form = accountForm()
     # TODO remove this after dev done
     dev_env = True

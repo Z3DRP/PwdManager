@@ -62,7 +62,7 @@ def fetch_user_id(usrname):
             raise ValueError('Username is required to find user id')
         else:
             usrCollection = get_db()
-            usr = usrCollection.find_ome({'username': usrname})
+            usr = usrCollection.find_one({'username': usrname})
             if usr is None:
                 print('No user was found for username: ' + usrname)
             else:
@@ -78,11 +78,11 @@ def update_user(user):
     try:
         userCollection = get_db()
         result = userCollection.update_one(
-            {'user_id': user.get},
+            {'user_id': user.usrid},
             {"$set": {
-                'username': user.get_username(),
-                'email': user.get_email(),
-                'password': user.get_password()
+                'username': user.username,
+                'email': user.email,
+                'password': user.pwd
             }},
             upsert=True
         )
