@@ -1,0 +1,86 @@
+let token = callApi("auth/authenticateUser",{
+	"data":{
+		"userName":"adminUser1",
+		"password":"abc123!"
+	}
+},false);
+log("got token "+token);
+
+let createTenantResult = callApi("access/createTenant",{
+	"tenant": {
+		"name": "Test Tenant 1",
+		"viewerSeats": 1,
+		"proSeats": 1
+	},
+	"auth": token
+});
+
+let tenantId = createTenantResult.data.modifiedList[0].id;
+
+log("created tenant, id= "+tenantId);
+
+let createUser = callApi("access/createUserDb",{
+	"user": {
+	"userName": "user1",
+	"password": "1234",
+	"firstName": "first",
+	"lastName": "last",
+	"email": "email@pyramidanalytics.com",
+	"adminType": 0, //admin type enumeration: normal user
+	"clientLicenseType": 100, //license type enumeration: viewer
+	"statusID": 1, //status "enabled"
+	"tenantId": tenantId //tenant Id from previous step
+	},
+	"auth": token // admin token generated above
+});
+
+let userId = createUser.data.modifiedList[0].id;
+log("created user "+userId);
+
+let updateUser=callApi("access/updateDbUsers",{
+	"user":[{
+		"id":userId,
+		"firstName":"new first name"
+	}],
+	"auth": token
+});
+
+let createRole=callApi("access/createRole",{
+	"data": {
+		"roleName": "new role",
+		"isPrivate": false, // private roles are only for individual users. this should always be FALSE.
+		"isHidden": false, // hidden roles appear only in the admin - not for end users.
+		"tenantId": tenantId,
+		"isGroupRole": false //?????????????
+	},
+	"auth": token
+});
+
+let roleId = createRole.data.modifiedList[0].id;
+log("created role "+roleId);
+
+let addUserToRole = callApi("access/addUserToRole",{
+	"data": {
+	"userId": userId,
+	"roleId": roleId
+	},
+	"auth": token
+});
+
+log("addUserToRole was sucsseful since errorMessage is empty "+addUserToRole.data.errorMessage.length==0);
+
+function log(msg){
+	document.write(msg);
+	console.log(msg);
+}
+
+function callApi(path,data,parseResult=true){
+	var xhttp = new XMLHttpRequest();
+	xhttp.open("POST", pyramidURL+path, false);
+	xhttp.send(JSON.stringify(data));
+	if(parseResult){
+		return JSON.parse(xhttp.responseText);
+	}else{
+		return xhttp.responseText;
+	}
+}
