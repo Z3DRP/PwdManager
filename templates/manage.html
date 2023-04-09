@@ -4,6 +4,71 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<!-- example to show displaying dictionary data -->
+<!-- NOTE: when user clicks edit button, redirect to page with form, values autofilled. when user makes changes, must click save to save changes, then redirects to this display page. -->
+
+<h1>Dictionary Contents:</h1>
+<ul>
+{% for key, value in test_data.items() %}
+    <div>
+        <li>{{ key }}: {{ value }}</li><button type="edit" class="jaz-button" onclick="handleEdit">Edit</button>
+    </div>
+{% endfor %}
+</ul>
+
+<!-- alternate example -->
+
+<h1>Dictionary Contents:</h1>
+<ul>
+    {% for key, value in test_data.items() %}
+        <div>
+            <li>
+                {{ key }}: <span id="{{ key }}-value">{{ value }}</span>
+                <button id="{{ key }}-edit" onclick="editValue('{{ key }}')">Edit</button>
+                <input id="{{ key }}-input" type="text" style="display: none;">
+                <button id="{{ key }}-save" onclick="saveValue('{{ key }}')" style="display: none;">Save</button>"
+            </li>
+        </div>
+    {% endfor %}
+</ul>
+
+<script>
+    function editValue(key) {
+        document.getElementByID(`${key}-value`).style.display = 'none';
+        document.getElementById(`${key}-edit`).style.display = 'none';
+        document.getElementById(`${key}-input`).style.display = 'inline';
+        document.getElementById(`${key}-save`).style.display = 'inline';
+        document.getElementById(`${key}-input`).value = document.getElementById(`${key}-value`).innerText;
+    }
+
+    function saveValue(key) {
+            const newValue = documetn.getElementByID(`${key}-input`).value;
+            document.getElementById(`${key}-value`).innerText = newValue;
+            document.getElementById(`${key}-value`).style.display = 'inline';
+            document.getElementById(`${key}-edit`).style.display = 'inline';
+            document.getElementById(`${key}-input`).style.display = 'none';
+            document.getElementById(`${key}-save`).style.display = 'none';
+
+            // Update the dictionary data on the server-side using fetch (pulled this from online, looks like it should work, but not too familiar with javascript)
+            fetch('/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ key: key, value: newValue})
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Server response:', data);
+            })
+            .catch(error => {
+                console.error('Error updating value:', error);
+            })
+        }
+</script>
+
+
+
 <!-- if might have to change-->
 {% for account in accounts %}
 
