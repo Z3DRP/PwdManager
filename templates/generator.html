@@ -28,8 +28,32 @@
               <div class="form-group">
                 {{ form.generate(class="jaz-button") }}
               </div>
+                <div class="form-group">
+                    {{ form.password_length.label }}
+                    {{ form.password_length() }}
+                </div>
+                <div class="form-group">
+                    {{ form.letter_count.label }}
+                    {{ form.letter_count() }}
+                </div>
+                <div class="form-group">
+                    {{ form.number_count.label }}
+                    {{ form.number_count() }}
+                </div>
+                <div class="form-group">
+                    {{ form.symbol_count.label }}
+                    {{ form.symbol_count() }}
+                </div>
+                <div class="form-group">
+                    {{ form.generate(class="jaz-button") }}
+                </div>
             </form>
-      </div>
-  </div>
+        </div>
+        {% if password_generated %}
+            <div class="flip-card-back">
+                <p class="title">{ generated_password }</p>
+            </div>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}
