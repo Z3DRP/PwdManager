@@ -1,39 +1,35 @@
 <!--this card wont flip over on hover it needs to flip over onClick -->
 {% extends 'base.html' %}
 {% block content %}
-<div class="flip-card">
-    <div class="flip-card-inner">
-        <div class="flip-card-front">
-            <p class="title">Generate Password</p>
-            <!--input for number of characters-->
-            <form method="POST">
+<div class="card align-middle" data-id-card="0" style="width: 75%;">
+  <div class="card-body">
+      <div class="card-front">
+          <h5 class="card-title">Generate Password</h5>
+      </div>
+      <div class="card-back">
+          <form method="POST">
                 {{ form.hidden_tag() }}
-                <div class="form-group">
-                    {{ form.password_length.label }}
-                    {{ form.password_length() }}
-                </div>
-                <div class="form-group">
-                    {{ form.letter_count.label }}
-                    {{ form.letter_count() }}
-                </div>
-                <div class="form-group">
-                    {{ form.number_count.label }}
-                    {{ form.number_count() }}
-                </div>
-                <div class="form-group">
-                    {{ form.symbol_count.label }}
-                    {{ form.symbol_count() }}
-                </div>
-                <div class="form-group">
-                    {{ form.generate(class="jaz-button") }}
-                </div>
+              <div class="form-group">
+                {{ form.pwd_length.label }}
+                {{ form.pwd_length() }}
+              </div>
+              <div class="form-group">
+                {{ form.letter_count.label }}
+                {{ form.letter_count() }}
+              </div>
+              <div class="form-group">
+                {{ form.number_count.label }}
+                {{ form.number_count() }}
+              </div>
+              <div class="form-group">
+                {{ form.symbol_count.label }}
+                {{ form.symbol_count() }}
+              </div>
+              <div class="form-group">
+                {{ form.generate(class="jaz-button") }}
+              </div>
             </form>
-        </div>
-        {% if password_generated %}
-            <div class="flip-card-back">
-                <p class="title">{ generated_password }</p>
-            </div>
-        {% endif %}
-    </div>
+      </div>
+  </div>
 </div>
 {% endblock %}
