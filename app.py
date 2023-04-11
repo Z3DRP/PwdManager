@@ -10,7 +10,10 @@ from data_access import user_db, acount_db
 from utils import random_generator
 from utils.Secret import get_secret
 
-# NOTE: run the app with flask run
+# TODO when opening the app again set these environment variables so server doesnt have to be restarted after each change
+# export FLASK_ENV=development && export FLASK_APP=app.py
+# run with
+# flask run
 
 app = Flask(__name__)
 # should be moved out
@@ -151,7 +154,3 @@ def generator(usrname):
         else:
             return render_template('generator.html', currentUsr=currentUsr, form=form, usrname = currentUsr.usrname)
     return render_template('generator.html', currentUsr=currentUsr, form=form, usrname = currentUsr.usrname)
-
-
-# use this so we can just run "python app.py" in terminal
-app.run(debug=True)
