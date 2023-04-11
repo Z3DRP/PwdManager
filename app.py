@@ -33,8 +33,10 @@ dev_env = True
 if dev_env:
          currentUsr = User("dev_user", "hzdkv@example.com")
          currentUsr.userID = "0"
-         account = Account('00000aaa', 0, 'gmail', 'zdev1@example.com', 'plainTxt')
-         accounts.append(account)
+         account1 = Account('00000aaa', 0, 'gmail', 'gmailUsername', 'zdev1@example.com', 'plainTxt')
+         accounts.append(account1)
+         account2 = Account('00000bbb', 0, 'github', 'githubUsername', 'email2@mail.com', 'githubPassword')
+         accounts.append(account2)
 
 
 @app.route('/register/', methods=['GET', 'POST'])
