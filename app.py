@@ -9,6 +9,10 @@ from models.Account import Account
 from data_access import user_db, acount_db
 from utils import random_generator
 
+# TODO when opening the app again set these environment variables so server doesnt have to be restarted after each change
+# export FLASK_ENV=development && export FLASK_APP=app.py
+# run with
+# flask run
 
 app = Flask(__name__)
 # define flask environment variables
@@ -98,12 +102,10 @@ def login():
             return redirect(url_for('manage', currentUsr=currentUsr, usrname = currentUsr.usrname, form=accountform))
         # on failed login, send error message, return to login page
         else:
-            # TODO: error message display
-            return render_template('login_html', form=form)
+            return render_template('login_html', form=form, emsg=test_err_msg)
     # on failed login, send error message, return to login page
     else:
-        # TODO: error message display
-        return render_template('login.html', form=form)
+        return render_template('login.html', form=form, emsg=test_err_msg)
 
 
 @app.route('/manage/<usrname>', methods=['GET', 'POST'])
@@ -148,7 +150,3 @@ def generator(usrname):
         else:
             return render_template('generator.html', currentUsr=currentUsr, form=form, usrname = currentUsr.usrname)
     return render_template('generator.html', currentUsr=currentUsr, form=form, usrname = currentUsr.usrname)
-
-
-# use this so we can just run "python app.py" in terminal
-app.run(debug=True)

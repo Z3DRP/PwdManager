@@ -1,13 +1,13 @@
 div {
-    color: white;
+  color: white;
 }
 
 .debug-button {
-  background-color: DarkOrange;
-  color: #fff;
-  cursor: pointer;
+background-color: DarkOrange;
+color: #fff;
+cursor: pointer;
 }
 
 .debug-button:hover {
-  background-color: LightSlateGrey;
+background-color: LightSlateGrey;
 }
