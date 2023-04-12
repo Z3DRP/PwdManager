@@ -16,7 +16,9 @@ from utils import random_generator
 
 app = Flask(__name__)
 # define flask environment variables
-app.config['FLASK_ENV'] = 'development'
+app.config['FLASK_DEBUG'] = 'development'
+app.config['DEBUG'] = True
+app.config['TESTING'] = True
 app.config['FLASK_APP'] = 'app.py'
 # TODO: add secret_genrator to random_generator utility with import secrets secrets.token_hex(16)
 app.config['SECRET_KEY'] = 'something for not eventually make byte string maybe'
@@ -137,18 +139,19 @@ def generator(usrname):
         letter_count = form.letter_count.data
         number_count = form.number_count.data
         symbol_count = form.symbol_count.data
-        # generate password with criteria
-        gen_pwd = random_generator.generate_pwd(
-            pwd_length,
-            letter_count,
-            number_count,
-            symbol_count
-        )
-        # set password form to show generated password
-        form.generated_pwd.data = gen_pwd
-        # check is useless if all cases return same redirect
-        if gen_pwd is not None:
-            return render_template('generator.html', currentUsr=currentUsr, form=form, usrname = currentUsr.usrname)
-        else:
+        if (letter_count + number_count + symbol_count > pwd_length):
+            err_msg = "Password length does not fit the other selected criteria length."
+            flash(err_msg)
+        elif (letter_count + number_count + symbol_count <= pwd_length):
+            letter_count = pwd_length - number_count - symbol_count
+            # generate password with criteria
+            gen_pwd = random_generator.generate_pwd(
+                pwd_length,
+                letter_count,
+                number_count,
+                symbol_count
+            )
+            # set password form to show generated password
+            form.generated_pwd.data = gen_pwd
             return render_template('generator.html', currentUsr=currentUsr, form=form, usrname = currentUsr.usrname)
     return render_template('generator.html', currentUsr=currentUsr, form=form, usrname = currentUsr.usrname)

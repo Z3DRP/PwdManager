@@ -10,23 +10,27 @@
           <form method="POST">
                 {{ form.hidden_tag() }}
               <div class="form-group">
-                {{ form.pwd_length.label }}
+                Password Length: 
                 {{ form.pwd_length() }}
               </div>
               <div class="form-group">
-                {{ form.letter_count.label }}
+                Letter Count: 
                 {{ form.letter_count() }}
               </div>
               <div class="form-group">
-                {{ form.number_count.label }}
+                Number Count: 
                 {{ form.number_count() }}
               </div>
               <div class="form-group">
-                {{ form.symbol_count.label }}
+                Symbol Count: 
                 {{ form.symbol_count() }}
               </div>
               <div class="form-group">
                 {{ form.generate(class="jaz-button") }}
+              </div>
+              <div class="password-output">
+                Generated Password:
+                {{ form.generated_pwd }}
               </div>
             </form>
       </div>
