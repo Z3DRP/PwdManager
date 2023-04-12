@@ -1,35 +1,43 @@
 <!--this card wont flip over on hover it needs to flip over onClick -->
 {% extends 'base.html' %}
 {% block content %}
-<div class="card align-middle" data-id-card="0" style="width: 75%;">
+<link rel="stylesheet" href="/static/css/generator.css">
+
+<div class="card-align-middle" data-id-card="0">
   <div class="card-body">
       <div class="card-front">
-          <h5 class="card-title">Generate Password</h5>
+          <h4 class="card-title">Generate Password</h4>
       </div>
+      <hr>
       <div class="card-back">
           <form method="POST">
                 {{ form.hidden_tag() }}
-              <div class="form-group">
-                Password Length: 
-                {{ form.pwd_length() }}
+              <div>
+                <p class="form-label">Password Length</p>
+                {{ form.pwd_length(class="form") }}
               </div>
-              <div class="form-group">
-                Letter Count: 
-                {{ form.letter_count() }}
+              </br>
+              <div>
+                <p class="form-label">Letter Count</p>
+                {{ form.letter_count(class="form") }}
               </div>
-              <div class="form-group">
-                Number Count: 
-                {{ form.number_count() }}
+              </br>
+              <div>
+                <p class="form-label">Number Count</p>
+                {{ form.number_count(class="form") }}
               </div>
-              <div class="form-group">
-                Symbol Count: 
-                {{ form.symbol_count() }}
+              </br>
+              <div>
+                <p class="form-label">Symbol Count</p>
+                {{ form.symbol_count(class="form") }}
               </div>
-              <div class="form-group">
+              <div class="form-group-button">
+              </br>
                 {{ form.generate(class="jaz-button") }}
               </div>
-              <div class="password-output">
-                Generated Password:
+              </br>
+              <div class="generator-output">
+                <p>Generated Password</p>
                 {{ form.generated_pwd }}
               </div>
             </form>
