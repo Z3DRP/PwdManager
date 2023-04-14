@@ -1,5 +1,4 @@
 from flask import Flask, render_template, redirect, url_for, flash
-from forms import login_form, registration_form, account_form, generator_form
 from forms.registration_form import RegistrationForm as registerForm
 from forms.login_form import LoginForm as loginForm
 from forms.account_form import AccountForm as accountForm
@@ -55,7 +54,7 @@ def register():
 def login():
     # change to jwt authentication
     form = loginForm()
-    test_err_msg = 'test error message'
+    test_err_msg = None
     if form.validate_on_submit():
         usrname = form.username.data
         pwd = form.pwd.data
@@ -68,6 +67,7 @@ def login():
         isMatch = User.verify_password(usrname, pwd)
 
         if isMatch:
+            hasError = True
             global currentUsr
             currentUsr = usrname
             auth_failed = False
@@ -75,9 +75,11 @@ def login():
             return redirect(url_for('manage', usrname=usrname, form=accountform))
         # might be redundant
         else:
+            hasError = False
             auth_failed = True
             return render_template('login_html', form=form, emsg=test_err_msg)
     else:
+        hasError = False
         return render_template('login.html', form=form, emsg=test_err_msg)
 
 

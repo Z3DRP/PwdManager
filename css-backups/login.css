@@ -1,0 +1,14 @@
+:root {
+    --jaz-background: DarkSlateGrey;
+}
+.vaultkey-bg {
+    background-color: var(--jaz-background);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.login-component {
+    align-items: center;
+    justify-content: center;
+}

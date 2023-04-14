@@ -1,4 +1,4 @@
-<div class="card align-middle" style="width: 75%;">
+<div class="card login-card">
   <div class="card-body">
     <h5 class="card-title">Login</h5>
       <form>
@@ -20,11 +20,3 @@
       </form>
   </div>
 </div>
-<br>
-<!--this is for development only remove once done-->
-{% if config['DEBUG'] %}
-<div class="text-center mb-5">
-  <a href="{{ url_for('manage', usrname='devUsr') }}" class="btn btn-secondary">Dev Login</a>
-  <br>
-</div>
-{% endif %}

@@ -99,17 +99,6 @@ def update_many_users(user_list):
     pass
 
 
-@staticmethod
-def authenticate_user(username, plain_txt_pwd):
-    # get
-    pass
-
-
-@staticmethod
-def compare_passwords(username, plain_txt):
-    pass
-
-
 def get_db():
     db = get_database()
     return db.users
