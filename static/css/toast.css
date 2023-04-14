@@ -1,0 +1,128 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+.wrapper-1{
+    width: 420px;
+    padding: 30px 20px;
+    border: 1px solid black;
+    position: absolute
+    top: 50px;
+    left: 0;
+    overflow: hidden;
+}
+#show-toast{
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    background-color: black;
+    color: white;
+    padding: 20px;
+    border-radius: 5px;
+}
+#toast{
+    width: 380px;
+    height: 90px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 10px 20px rgba(0,0,0,.25);
+    border-left: 8px solid #47d764;
+    border-radius: 7px;
+    display: grid;
+    grid-template-columns: 1.2fr 6fr 0.5fr;
+    transform: translate(-400px);
+    transition: 1s;
+}
+.container-1,.container-2{
+    align-self: center;
+}
+.container-1{
+    font-size: 40px;
+    color: #47d764;
+}
+.container-2 p:first-child{
+    color: #101020;
+    font-weight: 600;
+    font-size: 18px;
+}
+.container-2 p:last-child{
+    font-size: 12px;
+    color: #656555;
+    font-weight: 400;
+    margin: 0;
+}
+#toast button{
+    align-self: flex-start;
+    background-color: transparent;
+    font-size: 12px;
+    line-height: 0;
+    color: #656555;
+    cursor: pointer;
+}
+.bi-check-square-fill{
+    color: #47d764;
+}
+
+.wrapper-e{
+    width: 420px;
+    padding: 30px 20px;
+    border: 1px solid black;
+    background-color: white;
+    position: absolute
+    top: 50px;
+    right: 0;
+    overflow: hidden;
+}
+#show-toast{
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    background-color: black;
+    color: white;
+    padding: 20px;
+    border-radius: 5px;
+}
+#toast-e{
+    width: 380px;
+    height: 90px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 10px 20px rgba(0,0,0,.25);
+    border-left: 8px solid #47d764;
+    border-radius: 7px;
+    display: grid;
+    grid-template-columns: 1.2fr 6fr 0.5fr;
+    transform: translate(-400px);
+    transition: 1s;
+}
+.container-e1,.container-e2{
+    align-self: center;
+}
+.container-e1{
+    font-size: 40px;
+    color: #47d764;
+}
+.container-e2 p:first-child{
+    color: #101020;
+    font-weight: 600;
+    font-size: 18px;
+}
+.container-e2 p:last-child{
+    font-size: 12px;
+    color: #656555;
+    font-weight: 400;
+    margin: 0;
+}
+#toast-e button{
+    align-self: flex-start;
+    background-color: transparent;
+    font-size: 12px;
+    line-height: 0;
+    color: #656555;
+    cursor: pointer;
+}

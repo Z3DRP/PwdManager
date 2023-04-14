@@ -4,3 +4,6 @@
 body {
     background-color: var(--jaz-background);
     }
+.bi-safe {
+    color: white;
+}
