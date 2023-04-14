@@ -1,5 +1,4 @@
 from flask import Flask, render_template, redirect, url_for, flash
-from forms import login_form, registration_form, account_form, generator_form
 from forms.registration_form import RegistrationForm as registerForm
 from forms.login_form import LoginForm as loginForm
 from forms.account_form import AccountForm as accountForm
@@ -8,6 +7,7 @@ from models.User import User
 from models.Account import Account
 from data_access import user_db, acount_db
 from utils import random_generator
+from utils.Secret import get_secret
 
 # TODO when opening the app again set these environment variables so server doesnt have to be restarted after each change
 # export FLASK_ENV=development
@@ -18,11 +18,13 @@ from utils import random_generator
 app = Flask(__name__)
 # should be moved out
 # could mak another file that generates a random secrect with import secrets secrets.token_hex(16)
-app.config['SECRET_KEY'] = 'something for not eventually make byte string maybe'
+app.config['SECRET_KEY'] = get_secret()
 usrID = ''
 accounts = []
 account = {""}
 currentUsr = None
+
+
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
     # create user save usr to db then redirect to home
@@ -76,9 +78,9 @@ def login():
         # might be redundant
         else:
             auth_failed = True
-            return render_template('login_html', form=form, emsg=test_err_msg)
+            return render_template('login_html', form=form, emsg=test_err_msg, toastColor='yellow')
     else:
-        return render_template('login.html', form=form, emsg=test_err_msg)
+        return render_template('login.html', form=form, emsg=test_err_msg, toastColor='yellow')
 
 
 @app.route('/manage/<usrname>', methods=['GET', 'POST'])
