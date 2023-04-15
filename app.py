@@ -8,6 +8,7 @@ from models.Account import Account
 from data_access import user_db, acount_db
 from utils import random_generator
 from utils.Secret import get_secret
+import json
 
 # TODO when opening the app again set these environment variables so server doesnt have to be restarted after each change
 # export FLASK_ENV=development
@@ -57,7 +58,9 @@ def register():
 def login():
     # change to jwt authentication
     form = loginForm()
-    test_err_msg = 'test error message'
+    test_err_msg = None
+    toast_data = {}
+    test_success_msg = 'update success'
     if form.validate_on_submit():
         usrname = form.username.data
         pwd = form.pwd.data
@@ -72,15 +75,20 @@ def login():
         if isMatch:
             global currentUsr
             currentUsr = usrname
-            auth_failed = False
+            toast_data['successMessage'] = 'login successful'
+            toast_data['wasSuccess'] = 1
             accountform = accountForm()
             return redirect(url_for('manage', usrname=usrname, form=accountform))
         # might be redundant
         else:
-            auth_failed = True
-            return render_template('login_html', form=form, emsg=test_err_msg, toastColor='yellow')
+            toast_data['errorMessage'] = 'login failed'
+            toast_data['wasSuccess'] = 0
+            return render_template('login_html', form=form, toastData=json.dumps(toast_data))
     else:
-        return render_template('login.html', form=form, emsg=test_err_msg, toastColor='yellow')
+        toast_data['initialLoad'] = 1
+        # toast_data['errorMessage'] = 'login failed'
+        # toast_data['wasSuccess'] = 0
+        return render_template('login.html', form=form, toastData=json.dumps(toast_data))
 
 
 @app.route('/manage/<usrname>', methods=['GET', 'POST'])
