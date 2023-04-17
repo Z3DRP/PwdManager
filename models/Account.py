@@ -1,13 +1,14 @@
 from random import seed
 from random import randint
-from utils.random_generator import generateId
+from utils.random_generator import generate_id
 
 class Account:
 
-    def __init__(self, accountId, userId, name, email, password):
+    def __init__(self, accountId, userId, name, username, email, password):
         self.account_id = accountId
         self.user_id = userId
         self.name = name
+        self.username = username
         self.email = email
         self.password = password
         # TODO add self.extra_field stores ['fieldName', 'value']
@@ -30,6 +31,12 @@ class Account:
 
     def get_field(self, field_name):
         return self.extra_field[field_name]
+    
+    def get_account_username(self):
+        return self.username
+    
+    def set_username(self, username):
+        self.username = username
 
     def set_name(self, name):
         self.name = name
@@ -44,7 +51,7 @@ class Account:
         self.extra_field[field_name] = field_value
 
     def get_id(self):
-        return generateId()
+        return generate_id()
 
     def createNewAccount(self, usrId, name, email, password):
         self.account_id = self.get_id()

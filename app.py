@@ -1,4 +1,5 @@
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
+from forms import login_form, registration_form, account_form, generator_form
 from forms.registration_form import RegistrationForm as registerForm
 from forms.login_form import LoginForm as loginForm
 from forms.account_form import AccountForm as accountForm
@@ -10,39 +11,60 @@ from utils import random_generator
 from utils.Secret import get_secret
 
 # TODO when opening the app again set these environment variables so server doesnt have to be restarted after each change
-# export FLASK_ENV=development
-# export FLASK_APP=app.py
+# export FLASK_ENV=development && export FLASK_APP=app.py
 # run with
 # flask run
 
 app = Flask(__name__)
-# should be moved out
+# define flask environment variables
+app.config['FLASK_DEBUG'] = 'development'
+app.config['DEBUG'] = True
+app.config['TESTING'] = True
+app.config['FLASK_APP'] = 'app.py'
 # could mak another file that generates a random secrect with import secrets secrets.token_hex(16)
 app.config['SECRET_KEY'] = get_secret()
 usrID = ''
 accounts = []
 account = {""}
+#currentUsr should be a user object
 currentUsr = None
+# set dev, remove when done
+dev_env = True
+#create dev_user, add account; remove when done with development
+if dev_env:
+         currentUsr = User("dev_user", "hzdkv@example.com")
+         currentUsr.userID = "0"
+         account1 = Account('00000aaa', 0, 'gmail', 'gmailUsername', 'zdev1@example.com', 'plainTxt')
+         accounts.append(account1)
+         account2 = Account('00000bbb', 0, 'github', 'githubUsername', 'email2@mail.com', 'githubPassword')
+         accounts.append(account2)
 
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
+    # allow access to global variables
+    global currentUsr
+    global accounts
+    global dev_env
     # create user save usr to db then redirect to home
     form = registerForm()
-    # validate form will happen after submit/register
+    # validation occurs on form submission
     if form.validate_on_submit():
         # EqaulTo validator validates passwords match dont need to add the logic
         try:
+            # get user info to register new user
             usrname = form.username.data
             email = form.email.data
-            pwd = form.pwd.data
-            # confirmed_pwd = form.confirm_pwd.data
-            usr = User(usrname, email)
-            usr.set_password(pwd)
-            # v2 password set usr.set_password(pwd, True)
-            successful_insert = user_db.insert_user(usr)
+            pwd = form.password.data
+            # initialize new user object
+            currentUsr = User(usrname, email)
+            # set user info
+            currentUsr.set_password(pwd)
+            # save user to database
+            successful_insert = user_db.insert_user(currentUsr)
             if successful_insert:
-                return redirect(url_for('home', usrname=usrname))
+                # redirect to home page pass through entire currentUsr object
+                return redirect(url_for('home', currentUsr=currentUsr, usrname = currentUsr.usrname))
             else:
                 # need to show error if insert failed
                 return render_template('register.html', form=form)
@@ -55,27 +77,35 @@ def register():
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
+    # allow access to global variables
+    global currentUsr
+    global accounts
+    global dev_env
     # change to jwt authentication
     form = loginForm()
     test_err_msg = 'test error message'
     if form.validate_on_submit():
         usrname = form.username.data
-        pwd = form.pwd.data
-        # v2 pwd set usr.set_password(pwd, False)
-
+        pwd = form.password.data
+        # NOTE flash message goes from server to client, can show success/error with them. Not sure what these flashes do.
         # flash will output values somewhere im not sure where
         # %s might need changed
         flash('username: %s' % form.username.data)
-        flash('plaintext pw: %s' % form.pwd.data)
+        flash('plaintext pw: %s' % form.password.data)
         isMatch = User.verify_password(usrname, pwd)
-
+        # if password is correct, log user in
         if isMatch:
-            global currentUsr
-            currentUsr = usrname
             auth_failed = False
             accountform = accountForm()
-            return redirect(url_for('manage', usrname=usrname, form=accountform))
-        # might be redundant
+            # fetch user info from database
+            user_info = user_db.fetch_user(usrname)
+            # initialize user object using user info from database
+            current_user = User(usrname, user_info['email'])
+            current_user.user_id = user_info['user_id']
+            # TODO: login success message display
+            # redirect to management page sending through entire currentUsr object
+            return redirect(url_for('manage', currentUsr=currentUsr, usrname = currentUsr.usrname, form=accountform))
+        # on failed login, send error message, return to login page
         else:
             auth_failed = True
             return render_template('login_html', form=form, emsg=test_err_msg, toastColor='yellow')
@@ -85,41 +115,46 @@ def login():
 
 @app.route('/manage/<usrname>', methods=['GET', 'POST'])
 def manage(usrname):
-    # get accounts then create list of all accounts
-    form = accountForm()
-    # TODO remove this after dev done
+    global currentUsr
+    global accounts
+    global dev_env
+    # set dev, remove when done
     dev_env = True
+    form = accountForm()
     if not dev_env:
-        usr_id = user_db.fetch_user_id(usrname)
-        usr_accounts = acount_db.fetch_user_accounts(usr_id, usrname)
-    # else:
-    #     usr_id = 0
-    #     account = Account('00000aaa', 0, 'gmail', 'zdev1@example.com', 'plainTxt')
-    #     accounts.append(account)
-    return render_template('manage.html', usrname=usrname, form=form)
+        # get list of currentUsr's accounts
+        accounts = acount_db.fetch_user_accounts(currentUsr.usr_id, usrname)
+    # returns to manage page, passes through currentUsr object, usrname and the user's accoutns
+    return render_template('manage.html', currentUsr=currentUsr, usrname = currentUsr.usrname, form=form, accounts=accounts)
 
 
-@app.route('/generator/', methods=['GET', 'POST'])
-def generator():
-    pwdGenerated = False
+@app.route('/generator/<usrname>', methods=['GET', 'POST'])
+def generator(usrname):
+    global currentUsr
+    global accounts
+    global dev_env
+    #if dev_env is True:
+    #    current_user = User("dev_user", "hzdkv@example.com")
     form = generatorForm()
     if form.validate_on_submit():
-        pwd_len = form.pwd_length.data
+        # get password criteria from user
+        pwd_length = form.pwd_length.data
         letter_count = form.letter_count.data
-        number_count = form.letter_count.data
+        number_count = form.number_count.data
         symbol_count = form.symbol_count.data
-        # extra_fields = form.extra_fields.data
-        gen_pwd = random_generator.generate_pwd(
-            pwd_len,
-            letter_count,
-            number_count,
-            symbol_count
-        )
-        form.generated_pwd.data = gen_pwd
-        if gen_pwd is not None:
-            pwdGenerated = True
-            return render_template('generator.html', form=form)
-        else:
-            pwdGenerated = False
-            return render_template('generator.html', form=form)
-    return render_template('generator.html', form=form)
+        if (letter_count + number_count + symbol_count > pwd_length):
+            err_msg = "Password length does not fit the other selected criteria length."
+            flash(err_msg)
+        elif (letter_count + number_count + symbol_count <= pwd_length):
+            letter_count = pwd_length - number_count - symbol_count
+            # generate password with criteria
+            gen_pwd = random_generator.generate_pwd(
+                pwd_length,
+                letter_count,
+                number_count,
+                symbol_count
+            )
+            # set password form to show generated password
+            form.generated_pwd.data = gen_pwd
+            return render_template('generator.html', currentUsr=currentUsr, form=form, usrname = currentUsr.usrname)
+    return render_template('generator.html', currentUsr=currentUsr, form=form, usrname = currentUsr.usrname)

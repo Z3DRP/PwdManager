@@ -1,10 +1,13 @@
 <!-- eventually pull html out into manage card but need to pass in accounts -->
 <!-- TODO this will need some changing needs converted to Flask WTF forms and to find out how to specify value of flask form field -->
+
 {% extends 'base.html' %}
 {% block content %}
+
+
 <!-- if might have to change-->
 {% for account in accounts %}
-<div class="card align-middle" data-id-card="{{acount.account_id}}" style="width: 75%;">
+<div class="card align-middle" data-id-card="{{account.account_id}}" style="width: 75%;">
   <div class="card-body">
       <div class="card-front">
           <h5 class="card-title">{{account.name}}</h5>

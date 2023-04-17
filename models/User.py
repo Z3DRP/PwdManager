@@ -2,22 +2,17 @@ import rsa
 from random import randint, seed
 from werkzeug.security import generate_password_hash, check_password_hash
 from data_access import user_db, auth_db
-from utils.random_generator import generateId
+from utils.random_generator import generate_id
 
 
 class User:
-    # look at flask friday playlist to look at hashing pwds so
-    # public and private keys dont have to be tracked
     def __init__(self, usrname=None, email=None):
-        self.usrid = generateId()
-        self.username = usrname
+        self.usrname = usrname
         self.email = email
-        #v1 pwd
+        # init userID to none, when fetching user data, fill, it new user, we generate after user creation
+        self.userId = None
         self.encrypted_pwd = None
-        # self.public_key, self._private_key = self.get_keys()
 
-        # v2 of password encryption
-        # self._pwd_hash = None
 
     #v1 pwd encryption methods
     def set_password(self, plaintxt):
