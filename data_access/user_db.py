@@ -35,24 +35,36 @@ def InserteUserCollection(usr_list, database):
 @staticmethod
 def insert_user(user):
     try:
-        was_success = False
-        success_txt = 'User successfully inserted'
-        err_txt = 'A error occurred while inserting user'
         if user is not None:
             collection = get_db()
-            singleResult = collection.insert_one(user)
-            print(success_txt) if singleResult is not None else print(err_txt)
-            was_success = singleResult is None
+            result = collection.insert_one(user)
+            if not result.acknowledged:
+                raise Exception('A issue occurred while trying to connect')
+            elif result.insert_count > 0:
+                return {'wasSuccess': True, 'message': success.db_success('insert', 'user')}
+            else:
+                return {'wasSuccess': False, 'message': error.db_error('insert', 'user')}
         else:
             raise ValueError('User object cannot be empty')
     except Exception as err:
         print(err)
-    return was_success
 
 
 @staticmethod
-def fetch_user(username):
-    pass
+def fetch_user(usrname):
+    try:
+        if usrname is None:
+            raise ValueError('Username is required')
+        else:
+            usrCollection = get_db()
+            usr = usrCollection.find_one({'username': usrname})
+            if usr is None:
+                return {'userExists': False, 'message': error.no_results('user')}
+            else:
+                # not sure if this will work
+                return {'userExists': True, 'userData': usr}
+    except Exception as err:
+        raise Exception(err)
 
 
 @staticmethod
@@ -100,10 +112,8 @@ def update_many_users(user_list):
 
 
 @staticmethod
-def authenticate_user(username, plain_txt_pwd):
-    # get
+def authenticate_user(username, usrid):
     pass
-
 
 @staticmethod
 def compare_passwords(username, plain_txt):

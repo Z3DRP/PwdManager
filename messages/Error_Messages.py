@@ -5,7 +5,7 @@ class Errors:
         db_errors = {
             'insert': 'an error occurred while inserting ',
             'update': 'an error occurred while updating ',
-            'delete': 'an error occurred while deleting',
+            'delete': 'an error occurred while deleting'
         }
         return db_errors[error_type] + model_type
 

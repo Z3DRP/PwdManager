@@ -54,7 +54,7 @@ def fetch_user_accounts(user):
         accountCollection = get_db()
         usr_accounts = accountCollection.find({
             "$and": [
-                {'user_id': {"$eq": user.usrid}},
+                {'user_id': {"$eq": user.userid}},
                 {'username': {"$eq": user.username}}]
         })
         if not len(usr_accounts) > 0:

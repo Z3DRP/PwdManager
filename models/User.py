@@ -8,26 +8,39 @@ from utils.random_generator import generateId
 class User:
     # look at flask friday playlist to look at hashing pwds so
     # public and private keys dont have to be tracked
-    def __init__(self, usrname=None, email=None):
-        self.usrid = generateId()
+    def __init__(self, isNewUsr, usrname=None, email=None, pwd=None):
         self.username = usrname
         self.email = email
+        self.password = None
         #v1 pwd
-        self.encrypted_pwd = None
-        # self.public_key, self._private_key = self.get_keys()
+        if isNewUsr:
+            self.userid = generateId()
+            self.public_key, self.private_key = self.get_keys()
+            self.set_password(pwd, self.public_key, self.private_key)
 
-        # v2 of password encryption
-        # self._pwd_hash = None
+        if not isNewUsr:
+            try:
+                self.userId = user_db.fetch_user_id(usrname)
+                self.public_key = None
+                self.private_key = None
+                self.password = pwd
+            except Exception as err:
+                print(err)
+
 
     #v1 pwd encryption methods
-    def set_password(self, plaintxt):
+    def set_password(self, plaintxt, publicKey=None, privateKey=None):
         try:
-            was_success = None
-            public_key, private_key = self.get_keys()
-            self.encrypted_pwd = self.encrypt_pwd(plaintxt, public_key)
-            if self.encrypted_pwd is not None:
-                was_success = auth_db.store_keys(self.usrid, private_key, public_key)
-                print('success:: ' + was_success)
+            if publicKey is None and privateKey is None:
+                public_key, private_key = self.get_keys()
+            else:
+                public_key = publicKey
+                private_key = privateKey
+            self.password = self.encrypt_pwd(plaintxt, public_key)
+
+            if self.password is not None:
+                was_success = auth_db.store_keys(self.userid, private_key, public_key)
+                print('auth success:: true')
         except Exception as err:
             print(err)
 
@@ -69,46 +82,34 @@ class User:
 
     @staticmethod
     def verify_password(self, usrname, entered_pwd):
-        usr = None
-        privatekey = None
         try:
             usr = user_db.fetch_user(usrname)
-            if usr is None:
-                raise ValueError('That user does not exist')
+            # not sure if this will work test
+            if not usr.get('userExists'):
+                raise ValueError('Error username ' + usrname + ' does not exist')
             else:
-                privatekey = self.fetch_private_key(usrname)
-                if privatekey is None:
+                publicKey = self.fetch_public_key(usrname)
+                if publicKey is None:
                     raise ValueError('Unable to authenticate user')
+            return {
+                'isMatch': self.encrypt_pwd(entered_pwd, publicKey) == usr['password'],
+                'userId': usr.userData['userid'],
+                'email': usr.UserData['email']
+            }
+
         except Exception as err:
             print(err)
-        return self.decrypt_pwd(usr["username"], privatekey) == entered_pwd
 
+    def authenticated_user(self, usrname, email, id):
+        self.username = usrname
+        self.email = email
+        self.userid = id
+        self.public_key = None
+        self.private_key = None
+        self.password = None
 
-    #v2 pwd encryption
-    # def hash_password(self, plaintxt):
-    #     return generate_password_hash(plaintxt)
-    #
-    # def set_password(self, plaintxt, should_encrypt):
-    #     if should_encrypt:
-    #         self._pwd_hash = self.hash_password(plaintxt)
-    #     else:
-    #         self._pwd_hash = plaintxt
-    #
-    # def get_password_hash(self):
-    #     return self._pwd_hash
-    #
-    # def verify_password(self,  usrname, plaintxt):
-    #     try:
-    #         usr = user_db.fetch_user(usrname)
-    #         if usr is None:
-    #             raise Exception('That username does not exist')
-    #     except Exception as err:
-    #         print(err)
-    #     return check_password_hash(usr['_pwd_hash'], plaintxt)
-
-    #end v2 pwd encryption
     def get_user_id(self):
-        return self.usrid
+        return self.userid
 
     def set_username(self, usrname):
         self.username = usrname
