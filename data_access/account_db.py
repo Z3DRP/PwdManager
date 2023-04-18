@@ -82,13 +82,14 @@ def update_account(account):
             }},
             upsert=True
         )
-        #was_success = result.acknowledge
-        was_success = result.modified_count > 0
-        print(success.db_success('update', 'account')) if was_success else print(error.db_error('update', 'account'))
+        if not result.acknowledge:
+            raise ValueError('A issue occurred while connecting')
+        elif result.modified_count > 0 or result.upsert_count > 0:
+            return {'wasSuccess': True, 'message': success.db_success('update', 'user')}
+        else:
+            return {'wasSuccess': False, 'message': error.db_error('insert', 'user')}
     except Exception as err:
         print(err)
-
-    return was_success
 
 
 # TODO since nested array fields are accessed with dot notation and name need update for each 'extra field'

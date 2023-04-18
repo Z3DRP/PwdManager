@@ -2,13 +2,15 @@ from random import seed
 from random import randint
 from utils.random_generator import generateId
 
-class Account:
 
-    def __init__(self, accountId, userId, name, email, password):
-        self.account_id = accountId
+class Account:
+    def __init__(self, name, userId, username, email, password):
+        self.account_id = self.get_account_id()
         self.user_id = userId
+        self.username = username
         self.name = name
         self.email = email
+        # TODO if password not None encrypt with util auth
         self.password = password
         # TODO add self.extra_field stores ['fieldName', 'value']
         self.fields = {}
@@ -38,6 +40,7 @@ class Account:
         self.email = email
 
     def set_password(self, pwd):
+        # TODO use auth util to encrypt and decrypt passwords for accounts
         self.password = pwd
 
     def set_field(self, field_name, field_value):
@@ -46,9 +49,15 @@ class Account:
     def get_id(self):
         return generateId()
 
-    def createNewAccount(self, usrId, name, email, password):
-        self.account_id = self.get_id()
-        self.user_id = usrId
-        self.name = name
-        self.email = email
-        self.password = password
+    # class methods to simulate constructor overloading
+    @classmethod
+    def createDefaultAccount(cls, usrId):
+        accountId = generateId()
+        return cls(accountId, usrId, None, None, None)
+
+    def encrypt_password(self):
+        pass
+
+    def decrypt_password(self):
+        pass
+

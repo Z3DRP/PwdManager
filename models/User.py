@@ -1,6 +1,4 @@
 import rsa
-from random import randint, seed
-from werkzeug.security import generate_password_hash, check_password_hash
 from data_access import user_db, auth_db
 from utils.random_generator import generateId
 
