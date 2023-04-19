@@ -56,12 +56,12 @@
                     {{ form.pwd() }}
                 </div>
                 <div class="form-group">
-                    {{ form.create(class="jaz-button") }}
+                    <input type="submit" value="Login" name="editButton">
                 </div>
           </form>
       </div>
   </div>
 </div>
 {% endfor %}
-<button class="btn btn-primary mt-5 mb-5" onclick="handleAddAccount">Add Account</button>
+<input type="submit" value="Add Account" name="addAccountAction">
 {% endblock %}

@@ -23,8 +23,8 @@ function closeToast() {
     toast.style.transform = 'translateX(-400px)';
 }
 
-setupToast = (toastData) => {
-    if (toastData.wasSuccess === 1 || toastData.initialLoad !== undefined)  {
+const setupToast = (toastData) => {
+    if (toastData.wasSuccess === 1)  {
         let green = '#47d764';
         removeExistingIcon()
         setupToastIcon(toastIcon, green, 'success');
@@ -45,7 +45,7 @@ setupToast = (toastData) => {
     }
 }
 
-setupToastIcon = (node, toastColor, toastType) => {
+const setupToastIcon = (node, toastColor, toastType) => {
     switch(toastType) {
         case 'success':
             svgCheck = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -105,7 +105,7 @@ setupToastIcon = (node, toastColor, toastType) => {
     }
 }
 
-removeExistingIcon = () => {
+const removeExistingIcon = () => {
     let prevSuccess = document.getElementById('success-icon');
     let prevError = document.getElementById('error-icon');
     if (prevSuccess) {
@@ -115,3 +115,11 @@ removeExistingIcon = () => {
         toastIcon.removeChild(prevError);
     }
 }
+
+function main(toastData) {
+    if (toastData !== undefined) {
+        showToast(toastData);
+    }
+}
+
+main();

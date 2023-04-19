@@ -98,6 +98,10 @@ class User:
         except Exception as err:
             print(err)
 
+    @classmethod
+    def setUserLogin(cls, username, plaintxtPwd):
+        return cls(False, username, None, plaintxtPwd)
+
     def authenticated_user(self, usrname, email, id):
         self.username = usrname
         self.email = email
@@ -105,6 +109,7 @@ class User:
         self.public_key = None
         self.private_key = None
         self.password = None
+
 
     def get_user_id(self):
         return self.userid
