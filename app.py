@@ -32,7 +32,7 @@ currentUsr = None
 dev_env = True
 #create dev_user, add account; remove when done with development
 if dev_env:
-         currentUsr = User("dev_user", "hzdkv@example.com")
+         currentUsr = User("devUsr", "hzdkv@example.com")
          currentUsr.userID = "0"
          account1 = Account('00000aaa', 0, 'gmail', 'gmailUsername', 'zdev1@example.com', 'plainTxt')
          accounts.append(account1)
