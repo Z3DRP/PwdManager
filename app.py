@@ -17,7 +17,7 @@ from utils.Secret import get_secret
 
 app = Flask(__name__)
 # define flask environment variables
-app.config['FLASK_DEBUG'] = 'development'
+app.config['FLASK_DEBUG'] = True
 app.config['DEBUG'] = True
 app.config['TESTING'] = True
 app.config['FLASK_APP'] = 'app.py'
