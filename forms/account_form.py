@@ -7,7 +7,7 @@ class AccountForm(FlaskForm):
     username = StringField('Username')
     email = EmailField('Email', validators=[DataRequired(), Email()])
     pwd = StringField('Password')
-    create = SubmitField('Create Account')
+    update = SubmitField('Update')
     # look up select fields and selectFields multiple if use select
     # will have to create json from fields then pass json into db method
     # extra_field = SelectField('Extra Field', choices=['Pin', 'Recovery Email'])

@@ -1,67 +1,97 @@
 <!-- eventually pull html out into manage card but need to pass in accounts -->
-<!-- TODO this will need some changing needs converted to Flask WTF forms and to find out how to specify value of flask form field -->
+<!-- TODO this will need< some changing needs converted to Flask WTF forms and to find out how to specify value of flask form field -->
 {% extends 'base.html' %}
 {% block content %}
-<!-- if might have to change-->
+<div class="vstack gap-3">
 {% for account in accounts %}
-<div class="card align-middle" data-id-card="{{acount.account_id}}" style="width: 75%;">
+<div class="card align-middle justify-content-center p-3" data-id-card="{{acount.account_id}}" style="width: 75%;">
+  <div class="card-header">
+      <div class="card-title">
+          <h5>{{ account.name }}</h5>
+      </div>
+      <div class="btn-group card-buttons" role="group" aria-label="account actions">
+          <a class="ml-2 btn btn-dark" href="{{ url_for('upsert', accountId='{{account.account_id}}') }}">Edit</a>
+          <button data-id="{{account.account_id}}" type="button" class="btn-danger" onclick="handleDelete()">Delete</button>
+      </div>
+  </div>
   <div class="card-body">
       <div class="card-front">
           <h5 class="card-title">{{account.name}}</h5>
       </div>
       <div class="card-back">
-          <form method="POST">
-
-                <div class="form-group">
-                    <input type="text" value="{{ account.username }}"/>
+          <form method="POST" action="">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="{{account.name}}" placeholder="Account Name" value="{{ account.name }}"/>
+                    <label for="{{account.name}}">Account Name</label>
                 </div>
-                <div class="form-group">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="{{account.username}}" placeholder="Username" value="{{ account.username }}"/>
+                    <label for="{{account.username}}">Username</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="{{account.email}}" placeholder="Username" value="{{ account.email }}"/>
                     <input type="text" value="{{ account.email }}"/>
+                    <label for="{{account.email}}">Email Address</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="{{account.name}}-{{account.password}}" placeholder="Password"/>
+                    <label for="{{account.name}}-{{account.password}}">Password</label>
+                </div>
+                <div class="form-floating">
+                    <select class="form-select" id="{{account.id}}-{{account.name}}" arial-label="extra account fields">
+                        <option selected>Extra fields</option>
+                        <option value="Pin">Pin</option>
+                        <option value="Backup Email">Backup Email</option>
+                        <option value="Date">Date</option>
+                        <option value="Website">Website</option>
+                        <option value="Number">Number</option>
+                        <option value="Notes">Notes</option>
+                    </select>
+                    <label for="{{account.id}}-{{account.name}}">Password</label>
                 </div>
                 <div class="form-group">
-                    <input type="text" value="{{ account.password }}"/>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="jaz-button" onclick="handleEdit">edit</button>
+                    <button type="submit" class="jaz-button" onclick='handleSave()'>Save</button>
                 </div>
           </form>
       </div>
   </div>
 </div>
-<br>
+<br/>
 {% else %}
 <!-- if accounts does not have anything in it -->
-<div class="card align-middle" data-id-card="0" style="width: 75%;">
+<div id="0" class="card align-middle m-card p-3" data-id-card="0" style="width: 100%;">
+  <div class="card-header justify-content-center">
+      <h5 class="card-title mt-2">New Account</h5>
+      <div class="btn-group card-buttons" role="group" aria-label="account actions">
+  </div>
   <div class="card-body">
-      <div class="card-front">
-          <h5 class="card-title">VK</h5>
-      </div>
       <div class="card-back">
-          <form method="POST">
-                {{ form.hidden_tag() }}
-                <div class="form-group">
-                    {{ form.account_name.label }}
-                    {{ form.account_name() }}
-                </div>
-                <div class="form-group">
-                    {{ form.username.label }}
-                    {{ form.username() }}
-                </div>
-                <div class="form-group">
-                    {{ form.email.label }}
-                    {{ form.email() }}
-                </div>
-                <div class="form-group">
-                    {{ form.pwd.label }}
-                    {{ form.pwd() }}
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Login" name="editButton">
+          <form method="POST" action="">
+              <div class="form-group mb-3">
+                  <input type="text" class="form-control" id="name" placeholder="Account Name"/>
+                  <label for="name">Account Name</label>
+              </div>
+              <div class="form-group mb-3">
+                  <input type="text" class="form-control" id="username" placeholder="Username"/>
+                  <label for="username">Username</label>
+              </div>
+              <div class="form-group mb-3">
+                  <input type="text" class="form-control" id="email" placeholder="Email Address"/>
+                  <label for="email">Email Address</label>
+              </div>
+              <div class="form-group mb-3">
+                  <input type="text" class="form-control" id="pwd" placeholder="Password"/>
+                  <label for="pwd">Password</label>
+              </div>
+                <div class="form-group mt-3">
+                    <button id="createAccount" type="submit" class="btn btn-dark" onclick='handleCreate()'>Create</button>
                 </div>
           </form>
       </div>
   </div>
 </div>
+</div>
 {% endfor %}
-<input type="submit" value="Add Account" name="addAccountAction">
+<button id="addAccount" type="submit" class="btn btn-dark" onclick="handleAddAccount()">Add Account</button>
+</div>
 {% endblock %}

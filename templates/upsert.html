@@ -1,0 +1,75 @@
+<!--this will be a flask form page -->
+{% extends 'base.html' %}
+{% blockcontent %}
+<div id="0" class="card align-middle m-card p-3" data-id-card="0" style="width: 100%;">
+  <div class="card-header justify-content-center">
+      <h5 class="card-title mt-2">New Account</h5>
+      <div class="btn-group card-buttons" role="group" aria-label="account actions">
+  </div>
+  <div class="card-body">
+      <div class="card-back">
+          <form method="POST" action="">
+              {{ form.hidden_tag() }}
+              <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Edit Account</legend>
+                <div class="form-group">
+                  {{ form.account_name.label(class="form-control-label") }}
+                  {% if form.account_name.errors %}
+                    {{ form.account_name(class="form-control form-control-lg is-invalid") }}
+                      <div class="invalid-feedback">
+                        {% for error in form.account_name.errors %}
+                          <span> {{ error }}</span>
+                        {% endfor %}
+                      </div>
+                  {% else %}
+                    {{ form.account_name(class="form-control form-control-lg") }}
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                  {{ form.username.label(class="form-control-label") }}
+                  {% if form.username.errors %}
+                    {{ form.username(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                      {% for error in form.username.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                  {% else %}
+                    {{ form.username(class="form-control form-control-lg") }}
+                  {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label(class="form-control-label") }}
+                    {% if form.email.errors %}
+                      {{ form.email(class="form-control form-control-lg is-invalid") }}
+                      <div class="invalid-feedback">
+                          {% for error in form.email.errors %}
+                            <span>{{ error }}</span>
+                          {% endfor %}
+                      </div>
+                    {% else %}
+                       {{ form.email(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.pwd.label(class="form-control-label") }}
+                    {{ if form.pwd.errors %}
+                      {{ form.pwd(class="form-control form-control-lg is-invalid") }}
+                      <div class="invalid-feedback">
+                          {% for error in form.pwd.errors %}
+                            <span>{{ error }}</span>
+                      </div>
+                    {% else %}
+                      {{ form.pwd(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+              </fieldset>
+              <div class="form-group">
+                {{ form.update(class="btn btn-outline-info") }}
+              </div>
+          </form>
+      </div>
+  </div>
+</div>
+</div>
+{% endblock %}

@@ -4,8 +4,8 @@ from utils.random_generator import generateId
 
 
 class Account:
-    def __init__(self, name, userId, username, email, password):
-        self.account_id = self.get_account_id()
+    def __init__(self, accountId, name, userId, username, email, password):
+        self.account_id = accountId
         self.user_id = userId
         self.username = username
         self.name = name
@@ -14,6 +14,11 @@ class Account:
         self.password = password
         # TODO add self.extra_field stores ['fieldName', 'value']
         self.fields = {}
+
+    @classmethod
+    def createNewAccount(cls, name, userId, username, email, password):
+        newId = generateId()
+        return cls(accountId=newId, name=name, userId=userId, username=username, email=email, password=password)
 
     def get_userid(self):
         return self.user_id
@@ -55,9 +60,18 @@ class Account:
         accountId = generateId()
         return cls(accountId, usrId, None, None, None)
 
-    def encrypt_password(self):
+    def encrypt_password(self, pwd):
         pass
 
-    def decrypt_password(self):
+    def decrypt_password(self, pwd):
         pass
 
+    def getAccountJson(self):
+        return {
+            "AccountId": self.account_id,
+            'Name': self.name,
+            "Username": self.username,
+            "userId": self.user_id,
+            "email": self.email,
+            "password": self.encrypt_password(self.password)
+        }

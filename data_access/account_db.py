@@ -40,12 +40,33 @@ def InsertAccountsCollection(account_list, database):
 # if not spelled the same will not have access to class members and methods
 @staticmethod
 def insert_account(account):
-    pass
+    try:
+        accountCollection = get_db()
+        result = accountCollection.insert_one(account)
+        if not result.acknowledge:
+            raise Exception('An error occurred while storing account')
+        elif result.inserted_id is not None:
+            return {'wasSuccess': True, 'result': result}
+    except Exception as err:
+        raise Exception(err) from err
 
 
 @staticmethod
-def fetch_user_account(username):
-    pass
+def fetch_user_account(uid, accountName):
+    try:
+        accountCollection = get_db()
+        result = accountCollection.find({
+            "$and": [
+                {"userId": {"$eq": uid}},
+                {'username': {"$eq": accountName}}
+            ]
+        })
+        if result.count() > 0:
+            return {'wasSuccess': True, 'result': result}
+        else:
+            return {'wasSuccess': False, 'message': 'No account found'}
+    except Exception as err:
+        raise Exception(err) from err
 
 
 @staticmethod
@@ -54,16 +75,15 @@ def fetch_user_accounts(user):
         accountCollection = get_db()
         usr_accounts = accountCollection.find({
             "$and": [
-                {'user_id': {"$eq": user.userid}},
-                {'username': {"$eq": user.username}}]
+                {'userId': {"$eq": user['userId']}},
+                {'username': {"$eq": user['username']}}]
         })
-        if not len(usr_accounts) > 0:
-            print(error.no_accounts(user.username))
-            return None
+        if not usr_accounts.retrieved > 0:
+            return {'wasSuccess': False, 'message': error.no_accounts(user['username'])}
         else:
-            return usr_accounts
+            return {'wasSuccess': True, 'result': usr_accounts}
     except Exception as err:
-        print(err)
+        raise Exception(err) from err
 
 
 @staticmethod
@@ -89,7 +109,7 @@ def update_account(account):
         else:
             return {'wasSuccess': False, 'message': error.db_error('insert', 'user')}
     except Exception as err:
-        print(err)
+        raise Exception(err) from err
 
 
 # TODO since nested array fields are accessed with dot notation and name need update for each 'extra field'
@@ -111,11 +131,12 @@ def update_pin(account):
             upsert=True
         )
         was_success = result.modified_count > 0
-        print(success.db_success('update', 'account')) if was_success else print(error.db_error('update', 'account'))
+        if result.modified_count > 0:
+            return {'wasSuccess': True, 'message': success.db_success('update', 'account')}
+        else:
+            return {'wasSuccess': False, 'message': error.db_error('update', 'account')}
     except Exception as err:
-        print(err)
-
-    return was_success
+        raise Exception(err) from err
 
 
 def get_db():

@@ -11,25 +11,27 @@ from messages.Error_Messages import Errors as error
 @staticmethod
 def InserteUserCollection(usr_list, database):
     try:
-        was_success = False
-        userCollection = get_db()
         if len(usr_list) < 1:
             raise ValueError('User list must contain at least one record')
         else:
+            userCollection = get_db()
             # results will have insert id if no insert id it failed
             if len(usr_list) == 1:
                 singleResult = userCollection.insert_one(usr_list[0])
-                was_success = singleResult is None
-                print(success.db_success('insert', 'user')) if singleResult is not None else print(error.db_error('insert', 'user'))
+                if not singleResult.acknowledged:
+                    return {'wasSuccess': False, 'message': 'An error occurred while trying to insert new user'}
+                elif singleResult.inserted_id is not None:
+                    return {'wasSuccess': True, 'message': success.db_success('insert', 'user')}
             if len(usr_list) > 1:
                 multiResult = userCollection.insert_many(usr_list)
-                was_success = multiResult is None
-                print(success.db_success('insert_p', 'users')) if multiResult is not None else print(error.db_error('insert', 'users'))
-
+                if not multiResult.acknowledged:
+                    return {'wasSuccess': False, 'message': error.db_error('insert', 'users')}
+                elif multiResult.insert_ids is not None:
+                    return {'wasSuccess': True, 'message': success.db_success('insert', 'users')}
+                else:
+                    return {'wasSuccess': False, 'message': error.db_error('insert', 'users')}
     except Exception as err:
-        print(err)
-        raise
-    return was_success
+        raise Exception(err) from err
 
 
 @staticmethod
@@ -39,15 +41,15 @@ def insert_user(user):
             collection = get_db()
             result = collection.insert_one(user)
             if not result.acknowledged:
-                raise Exception('A issue occurred while trying to connect')
-            elif result.insert_count > 0:
+                raise Exception('A issue occurred while trying to connect to database')
+            elif result.inserted_id is not None:
                 return {'wasSuccess': True, 'message': success.db_success('insert', 'user')}
             else:
                 return {'wasSuccess': False, 'message': error.db_error('insert', 'user')}
         else:
             raise ValueError('User object cannot be empty')
     except Exception as err:
-        print(err)
+        raise Exception(err) from err
 
 
 @staticmethod
@@ -76,13 +78,12 @@ def fetch_user_id(usrname):
             usrCollection = get_db()
             usr = usrCollection.find_one({'username': usrname})
             if usr is None:
-                print('No user was found for username: ' + usrname)
+                return {'userExists': False, 'message': 'User not found'}
             else:
                 # dictionary is returned
-                usrId = usr['userId']
+                return {'userExists': True, 'userId': usr['userId']}
     except Exception as err:
-        print(err)
-    return usrId if usrId is not None else ''
+        raise Exception('Unknown error') from err
 
 
 @staticmethod
@@ -99,11 +100,12 @@ def update_user(user):
             upsert=True
         )
         was_success = result.modified_count > 0
-        print(success.db_success('update', 'user')) if was_success else print(error.db_error('update', 'user'))
+        if result.modified_count > 0:
+            return {'wasSuccess': True, 'result': result}
+        else:
+            return {'wasSuccess': False, 'message': error.db_error('update', 'user')}
     except Exception as err:
-        print(err)
-
-    return was_success
+        raise Exception(err) from err
 
 
 @staticmethod

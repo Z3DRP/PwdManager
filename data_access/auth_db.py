@@ -1,3 +1,8 @@
+import json
+from messages.Success_Messages import Success as success
+from messages.Error_Messages import Errors as error
+
+
 from pymongo import MongoClient
 from data_access.dev_db import get_database
 #probably should make these static methods
@@ -8,14 +13,23 @@ from data_access.dev_db import get_database
 
 
 @staticmethod
-def store_auth(authInfo):
+def store_auth(userId, private_key, public_key):
     try:
+        authInfo = {
+            'userId': userId,
+            'privateKey': private_key.decode(),
+            'publicKey': public_key.decode()
+        }
         authCollection = get_db()
-        result = authCollection.insertOne(authInfo)
-        was_success = result is not None
+        result = authCollection.insertOne(json.dumps(authInfo))
+        if not result.acknowledged:
+            raise Exception('An error occurred while trying to connect to database')
+        if result.inserted_id is not None:
+            return {'wasSuccess': True, 'message': 'User auth stored'}
+        else:
+            return {'wasSuccess': False, 'message': 'An error occurred while storing credentials'}
     except Exception as err:
-        print(err)
-    return was_success
+        raise Exception(err) from err
 
 
 @staticmethod

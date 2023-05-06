@@ -67,7 +67,7 @@
         </div>
         <div class="form-group">
           {{ form.password.label(class="form-control-label") }}
-          {% if form.email.errors %}
+          {% if form.password.errors %}
             {{ form.password(class="form-control form-control-lg is-invalid") }}
             <div class="invalid-feedback">
               {% for error in form.password.errors %}
@@ -80,7 +80,7 @@
         </div>
       </fieldset>
       <div class="form-group">
-        {{ form.login(class="btn btn-outline-info" }}
+        {{ form.login(class="btn btn-outline-info") }}
       </div>
       <small class="text-muted ml-2">
         <a href="#">Forgot Password?</a>
@@ -96,7 +96,7 @@
     <br>
     <div class="border-top pt-3">
       <small class="text-muted">
-        Dev <a class="ml-2" href="{{ url_for('manage') }}">Login</a>
+        Dev <a class="ml-2" href="{{ url_for('manage', username='dev') }}">Login</a>
       </small>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
